@@ -1,0 +1,22 @@
+.form {
+    margin: 10px;
+}
+
+.evenement {
+    border: 1px solid gray;
+    padding: 20px;
+    margin: 20px;
+    width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.evenement span {
+    padding-right: 10px;
+}
+
+.actions {
+    color: blue;
+}

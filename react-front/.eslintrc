@@ -1,0 +1,31 @@
+{
+  "parserOptions": {
+   "parser": "@babel/eslint-parser",
+   "ecmaVersion": 6,
+   "sourceType": "module",
+   "ecmaFeatures": {
+    "jsx": true
+   }
+  },
+
+  "extends": [
+   "eslint:recommended",
+   "eslint-config-prettier",
+   "plugin:prettier/recommended"
+
+  ],
+  "rules": {
+   "semi": "off",
+   "no-extra-semi": "error",
+   "no-undef": "error",
+   "react/jsx-uses-react": "error",
+   "react/jsx-uses-vars": "error",
+   "no-unused-vars": "warn",
+  "no-template-curly-in-string" :"off",
+  "prettier/prettier": 0
+  },
+  "plugins": ["react"],
+  "env": {
+   "browser": true
+  }
+ }

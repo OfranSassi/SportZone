@@ -1,0 +1,29 @@
+@import "~antd/dist/antd.css";
+.ant-btn.ant-btn-dashed:focus {
+ /* background-color: #1890ff !important; */
+ /* background-image: linear-gradient(to right, rgba(0, 204, 255, 0.39), rgb(225, 0, 255)); */
+ background-color: #94c997;
+ background-image: linear-gradient(315deg, #94c997 0%, #daacec 74%);
+ font-size: 20px !important;
+ font-weight: bold;
+ color: white !important;
+}
+.ant-btn ant-btn-dashed.span {
+ border-radius: 40% !important;
+}
+.input {
+ border: 1px solid #f1356d !important ;
+ color: black !important;
+ box-shadow: none !important;
+ outline: none !important;
+}
+.input:focus {
+ box-shadow: none !important;
+ outline: none !important;
+}
+.ant-select-selector{
+    border: 0px solid #f1356d !important ;
+    color: black !important;
+    box-shadow: none !important;
+    outline: none !important;
+}

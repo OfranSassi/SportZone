@@ -1,0 +1,77 @@
+@import "~antd/dist/antd.css";
+#components-layout-demo-top-side-2 .logo {
+ float: left;
+ width: 120px;
+ height: 31px;
+ margin: 16px 24px 16px 0;
+ background: rgba(255, 255, 255, 0.3);
+}
+
+.ant-row-rtl #components-layout-demo-top-side-2 .logo {
+ float: right;
+ margin: 16px 0 16px 24px;
+}
+
+.site-layout-background {
+ background: #fff;
+ box-shadow: 0 0 3px #ccc;
+ min-height: 500px !important;
+ /* oval content border */
+ border-radius: 5px !important;
+}
+.site-page-header {
+ border: 1px solid rgb(235, 237, 240);
+}
+.site-page-header.title {
+ text-align: center;
+ background-image: url(../../image/logo.png);
+ height: 70px;
+ width: 110%;
+ margin: -10px;
+ background: url(../../image/logo.png);
+}
+/* .ant-layout.site-layout {
+ float: right;
+} */
+/* Navbar Part */
+.ant-menu-overflow.ant-menu.ant-menu-root.ant-menu-horizontal.ant-menu-dark {
+ float: right;
+ margin: 0 1.5%;
+ width: 30%;
+ /* padding-right: 0px !important;
+ padding-left: 0px !important; */
+}
+.ant-layout-sider-children {
+ padding: 15px;
+ height: 95vh;
+}
+
+.anticon svg {
+ height: 20px !important;
+ width: 20px !important;
+ font: size 40px !important;
+}
+/* Navbar part Borders*/
+/* .ant-layout-header.header {
+ border-radius: 20px !important;
+} */
+/* .ant-layout-sider {
+ border-radius: 50px !important;
+} */
+.logo h3 {
+ color: green;
+ font-size: 22px;
+ font-weight: bold;
+ text-align: center;
+}
+.logo img {
+ border-radius: 40% !important;
+}
+.logo {
+ padding-bottom: 50px;
+}
+.ant-menu-item-selected {
+ /* border-radius: 15px; */
+ border-top-right-radius: 15px;
+ border-bottom-right-radius: 15px;
+}

@@ -1,0 +1,22 @@
+.form {
+    margin: 10px;
+}
+
+.Programme_session {
+    border: 1px solid gray;
+    padding: 20px;
+    margin: 20px;
+    width: 1000px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.Programme_session span {
+    padding-right: 10px;
+}
+
+.actions {
+    color: blue;
+}
