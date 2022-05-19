@@ -1,4 +1,4 @@
-import { Button, Table, Modal, DatePicker, message, Form, Input } from "antd"
+import { Button,  Table, Modal, DatePicker, message, Form, Input } from "antd"
 import Dashboard from "../Dashboard"
 import Axios from "axios"
 import React, { useEffect, useState } from "react"
@@ -16,6 +16,7 @@ export default function Challengeform() {
  const [page, setPage] = useState(1)
  const [pageSize, setPageSize] = useState(10)
  const [loading, setLoading] = useState(false)
+ const [openModal, setOpenModal] = useState(true)
  const [error, setError] = useState(false)
  const [challenges, setChallenges] = useState([])
  const [players, setPlayers] = useState([])
@@ -24,6 +25,8 @@ export default function Challengeform() {
  const [final_date, setFinal_date] = useState("")
  const [video_link, setVideo_link] = useState("")
  const [objective, setObjective] = useState("")
+
+
 
 
  useEffect(() => {
@@ -56,6 +59,7 @@ export default function Challengeform() {
   }
   fetchData()
  }, [])
+
  //table of content
  const columns = [
    
@@ -88,13 +92,17 @@ export default function Challengeform() {
        type='primary'
        onClick={(e) => {
          setPlayerId(record.id),onAssignChallenge(record)
+         
        }}
        style={{ marginLeft: 12 }}
-      >
+             >
        Reserve a challenge
       </Button>
       <Button type='primary'>
-       <Link to='/coach/players/details/:id'>Details</Link>
+         {/* in details I should get the information related to tthe player */}
+       <Link to='/coach-challenge-details'>Details</Link>
+       {/* <Link to='/coach/players/details/:id'>Details</Link> */}
+         
       </Button>
      </>
     )
@@ -112,6 +120,7 @@ export default function Challengeform() {
   setIsAssigned(false)
   setChallengeplayer(null)
  }
+
 //   const handleChangeSelect = (e) => {
 //    setChallengeplayer({
 //     ...challengeplayer,
@@ -135,6 +144,7 @@ export default function Challengeform() {
    // objective: e.target.value,
   })
  }
+
  const assign = async (challenge) => {
   try {
    // setLoading(true)
@@ -169,14 +179,19 @@ export default function Challengeform() {
          {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
          }
+         
       }).then(res=>{
+         message.success('Challenge Saved!')
          console.log('------',res)
-      })
-   }
+         
+      }) 
+   } 
    catch (e) {
+      message.error('Something went wrong!')
    console.log("error")
   }
 }
+
 
  // const onDateSelection = ((value, dateString)=>{
  //     console.log("Value:", value,"DateString:",dateString);
@@ -221,7 +236,6 @@ console.log(objective);
 //      },
 // })
 
-
  return (
   <Dashboard>
    <div>
@@ -249,19 +263,20 @@ console.log(objective);
      ></Table>
     )}
 
-    {isAssigned &&
+    {isAssigned && 
+   //  openModal &&
      <Modal
       title='Please choose dates and time of challenge reservation'
       visible={isAssigned}
       okText='Reserve'
-     
       onCancel={() => {
       resetAssign()
      
       }}
       // onOk={twoCallsAgain}
-      onOk={assign}
-     >   
+      onOk={assign} 
+
+     >  
        <Form layout='vertical'>
 {/*       
        {challenges.map((chall) => (
@@ -317,8 +332,8 @@ console.log(objective);
         </Form.Item>
        </Form>
   
-     </Modal>
-    }
+     </Modal> 
+}  
    </div>
   </Dashboard>
  )

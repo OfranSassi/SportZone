@@ -10,8 +10,8 @@
 
   "extends": [
    "eslint:recommended",
-   "eslint-config-prettier",
-   "plugin:prettier/recommended"
+   "eslint-config-prettier"
+  //  "plugin:prettier/recommended"
 
   ],
   "rules": {

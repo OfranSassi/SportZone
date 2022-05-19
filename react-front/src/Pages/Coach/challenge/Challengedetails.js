@@ -27,6 +27,9 @@ export default function Challengeform() {
     const [video_link, setVideo_link] = useState("")
     const [objective, setObjective] = useState("")
     const [etatRecord, setEtatRecord] = useState(false)
+    const [updateChall, setUpdateChall] = useState([])
+    const [editingChall, setEditingChall] = useState(null)
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -96,8 +99,8 @@ export default function Challengeform() {
             <DeleteOutlined
        className='mx-2'
        onClick={() => {
-          
-         deleteChallenge(record.id);setEtatRecord(true)
+         onDeletePlayer(record)
+         // deleteChallenge(record.id);setEtatRecord(true)
        }}
        style={{ color: "red", marginLeft: 12 }}
       />
@@ -128,30 +131,35 @@ export default function Challengeform() {
          // objective: e.target.value,
         })
        }
-       const assign = async (challenge) => {
-        try {
-         console.log("player iddddd",playerId)
-         await Axios.post("http://localhost:5001/coach/challenge/create", 
-            {
-               "player":playerId,
-                  "video_link":video_link,
-                  "objective":objective,
-                  "start_date":start_date,
-                  "final_date":final_date,         
-            },
-            {
-               headers: 
-               {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-               }
-            }).then(res=>{
-               console.log('------',res)
-            })
+       const edit = async (challenge) => {
+         try {
+      
+          console.log("player iddddd",playerId)
+          await Axios.put("http://localhost:5001/coach/challenge/update/:id", 
+             {
+                "player":playerId,
+                   "video_link":video_link,
+                   "objective":objective,
+                   "start_date":start_date,
+                   "final_date":final_date,         
+             },
+             {
+                headers: 
+                {
+                   Authorization: `Bearer ${localStorage.getItem("token")}`,
+                }
+                
+             }).then(res=>{
+                message.success('Challenge Edited!')
+                console.log('------',res)
+                
+             }) 
+          } 
+          catch (e) {
+             message.error('Something went wrong!')
+          console.log("error")
          }
-         catch (e) {
-         console.log("error")
-        }
-      }
+       }
       
       
       console.log(video_link);
@@ -170,7 +178,22 @@ export default function Challengeform() {
        const onFinish = (values) => {
         console.log(values)
        }
+
+
+       const onDeletePlayer = (record) => {
+         Modal.confirm({
+          title: "Are you sure, you want to delete this challenge record?",
+          okText: "Yes",
+          okType: "danger",
+          onOk: () => {
+            deleteChallenge(record.id);
+            setEtatRecord(true)
+          },
+         })
+        }
       
+     
+       
       
        return (
         <Dashboard>
@@ -198,90 +221,78 @@ export default function Challengeform() {
             bordered
            ></Table>
           )}
-         {/* {isEditing && (
+         {/* {isAssigned && (
      <Modal
-      title='Edit Player'
-      visible={isEditing}
+      title='Edit Challenge'
+      visible={isAssigned}
       okText='Save'
       onCancel={() => {
-       resetEditing()
+       resetAssign()
       }}
-      onOk={() => {
-       setPlayers((pre) => {
-        return pre.map((player) => {
-         if (player.id === editingPlayer.id) {
-          return editingPlayer
-         } else {
-          return player
-         }
-        })
-       })
-       resetEditing()
-      }}
+      onOk={edit}
+      // onOk={() => {
+      //  setUpdateChall((pre) => {
+      //   return pre.map((updateChall) => {
+      //    if (updateChall.id === editingPlayer.id) {
+      //     return editingChall
+      //    } else {
+      //     return updateChall
+      //    }
+      //   })
+      //  })
+      //  resetAssign()
+      // }}
      >
       <Form
-       initialValues={editingPlayer}
+       initialValues={editingChall}
        layout='vertical'
        onFinish={onFinish}
       >
-       <Form.Item name='id' label='ID'>
+       <Form.Item name='video_link' label='Link Video'>
         <Input
          className='input'
-         value={editingPlayer.id}
+         value={editingChall.video_link}
          onChange={(e) => {
-          setEditingPlayer((pre) => {
-           return { ...pre, id: e.target.value }
+          setEditingChall((pre) => {
+           return { ...pre, video_link: e.target.value }
           })
          }}
         />
        </Form.Item>
-       <Form.Item name='name' label='Name'>
+       <Form.Item name='objective' label='Objective'>
         <Input
          className='input'
-         value={editingPlayer.name}
+         value={editingChall.objective}
          onChange={(e) => {
-          setEditingPlayer((pre) => {
-           return { ...pre, name: e.target.value }
+          setEditingChall((pre) => {
+           return { ...pre, objective: e.target.value }
           })
          }}
         />
        </Form.Item>
-       <Form.Item name='desc' label='Description'>
+       <Form.Item name='start_date' label='Start Date'>
         <Input
          className='input'
-         value={editingPlayer.desc}
+         value={editingChall.start_date}
          onChange={(e) => {
-          setEditingPlayer((pre) => {
-           return { ...pre, desc: e.target.value }
+          setEditingChall((pre) => {
+           return { ...pre, start_date: e.target.value }
           })
          }}
         />
        </Form.Item>
-       <Form.Item name='age' label='Age'>
+       <Form.Item name='final_date' label='Final Date'>
         <Input
          className='input'
-         value={editingPlayer.age}
+         value={editingChall.final_date}
          onChange={(e) => {
-          setEditingPlayer((pre) => {
-           return { ...pre, age: e.target.value }
+          setEditingChall((pre) => {
+           return { ...pre, final_date: e.target.value }
           })
          }}
         />
        </Form.Item>
-       <Form.Item name='status' label='Status'>
-        <Select
-         className='input'
-         value={editingPlayer?.status}
-         onChange={(e) => {
-          setEditingPlayer((pre) => {
-           return { ...pre, status: e.target.value }
-          })
-         }}
-        >
-         <Select.Option value='true'>True</Select.Option>
-         <Select.Option value='false'>False</Select.Option>
-        </Select>
-       </Form.Item>
+       
       </Form>
      </Modal>
     )} */}
