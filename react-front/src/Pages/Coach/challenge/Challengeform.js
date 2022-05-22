@@ -1,4 +1,12 @@
-import { Button,  Table, Modal, DatePicker, message, Form, Input } from "antd"
+import {
+ Button,
+ Table,
+ Modal,
+ DatePicker,
+ message,
+ Form,
+ Input,
+} from "antd"
 import Dashboard from "../Dashboard"
 import Axios from "axios"
 import React, { useEffect, useState } from "react"
@@ -8,7 +16,7 @@ import {
  getChallenges,
  getPlayers,
 } from "../../../services/coachservices/challengesplayers.js"
-
+import { useNavigate } from "react-router-dom"
 
 export default function Challengeform() {
  const [challengeplayer, setChallengeplayer] = useState({})
@@ -25,9 +33,7 @@ export default function Challengeform() {
  const [final_date, setFinal_date] = useState("")
  const [video_link, setVideo_link] = useState("")
  const [objective, setObjective] = useState("")
-
-
-
+ const navigate = useNavigate()
 
  useEffect(() => {
   const fetchData = async () => {
@@ -62,14 +68,14 @@ export default function Challengeform() {
 
  //table of content
  const columns = [
-   
   { title: "Player's Name", dataIndex: "firstname", key: `_id` },
   {
    title: "Player's Surname",
    dataIndex: "lastname",
   },
   { title: "Email", dataIndex: "email" },
-  {title: "Status",
+  {
+   title: "Status",
    dataIndex: "isactive",
    render: (isactive) => {
     return <p>{isactive ? "Active" : "Inactive"}</p>
@@ -91,18 +97,27 @@ export default function Challengeform() {
       <Button
        type='primary'
        onClick={(e) => {
-         setPlayerId(record.id),onAssignChallenge(record)
-         
+        setPlayerId(record.id), onAssignChallenge(record)
        }}
        style={{ marginLeft: 12 }}
-             >
+      >
        Reserve a challenge
       </Button>
-      <Button type='primary'>
-         {/* in details I should get the information related to tthe player */}
-       <Link to='/coach-challenge-details'>Details</Link>
-       {/* <Link to='/coach/players/details/:id'>Details</Link> */}
-         
+      <Button
+       onClick={() => {
+        navigate("/coach-challenge-details/", { state: record.id })
+       }}
+       type='primary'
+      >
+       //{" "}
+       {
+        <Link
+         to={{ path: "/coach-challenge-details/", idplayer: record.id }}
+        >
+         Details
+        </Link>
+       }
+       Details
       </Button>
      </>
     )
@@ -121,24 +136,17 @@ export default function Challengeform() {
   setChallengeplayer(null)
  }
 
-//   const handleChangeSelect = (e) => {
-//    setChallengeplayer({
-//     ...challengeplayer,
-//     startdate: e[0].format(),
-//     finaldate: e[1].format(),
-//    })
-//   }
-  const handleChangeDate = (e) => {
-     setChallengeplayer({
-      ...challengeplayer,
-      startdate: e[0].format(),
-      finaldate: e[1].format(),
-     })
-    }
+ const handleChangeDate = (e) => {
+  setChallengeplayer({
+   ...challengeplayer,
+   startdate: e[0].format(),
+   finaldate: e[1].format(),
+  })
+ }
  const handle = (e) => {
   setChallengeplayer({
    ...challengeplayer,
-   [e.target.name]: e.target.value
+   [e.target.name]: e.target.value,
    // [e.target.objective]: e.target.value,
    // video_link: e.target.value,
    // objective: e.target.value,
@@ -147,94 +155,35 @@ export default function Challengeform() {
 
  const assign = async (challenge) => {
   try {
-   // setLoading(true)
-   // const assigned = await assignChallenge(
-   //  challengeplayer.player,
-   //  challengeplayer.video_link,
-   //  challengeplayer.objective,
-   //  challengeplayer.start_date,
-   //  challengeplayer.final_date,
-   //     )
-   // setPlayers((pre) => {
-   //  return pre.map((player) => {
-   //   return player
-   //  })
-   // })
-   // resetAssign()
-
-   // setChallengeplayer(assigned)
-   // alert(JSON.stringify(challengeplayer))
-   // setLoading(false)
-   console.log("player iddddd",playerId)
-   await Axios.post("http://localhost:5001/coach/challenge/create", 
-      {
-         "player":playerId,
-            "video_link":video_link,
-            "objective":objective,
-            "start_date":start_date,
-            "final_date":final_date,         
-      },
-      {
-         headers: 
-         {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-         }
-         
-      }).then(res=>{
-         message.success('Challenge Saved!')
-         console.log('------',res)
-         
-      }) 
-   } 
-   catch (e) {
-      message.error('Something went wrong!')
+   console.log("player iddddd", playerId)
+   await Axios.post(
+    "http://localhost:5001/coach/challenge/create",
+    {
+     player: playerId,
+     video_link: video_link,
+     objective: objective,
+     start_date: start_date,
+     final_date: final_date,
+    },
+    {
+     headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+     },
+    }
+   ).then((res) => {
+    message.success("Challenge Saved!")
+    console.log("------", res)
+   })
+  } catch (e) {
+   message.error("Something went wrong!")
    console.log("error")
   }
-}
+ }
 
-
- // const onDateSelection = ((value, dateString)=>{
- //     console.log("Value:", value,"DateString:",dateString);
- //    ({reservationDateAndTime:value,formattedReservationDateAndTime:dateString})
- //  })
- //  //this function enables us to not see any past dates available for selection
-//  const disablePastDates = (current) => {
-//   return current && current < moment().endOf("day")
-//  }
-// const twoCalls =e =>{
-//    (date) => setSelectedDate(date),
-//    handleChangeDate 
-// }
-//  function handleConfirmReservation() {
-//   if (setSelectedDate()) {
-//    assign
-//   } else {
-//    message.error("Please choose dates and time for your reservation")
-//   }
-//  }
-// const twoCallsAgain =e =>{
-//    handle,
-//    handleConfirmReservation()
-// }
-console.log(video_link);
-console.log(start_date);
-console.log(final_date);
-console.log(objective);
-
-
-// Axios.post("http://localhost:5001/coach/challenge/assign",{  
-//    {
-//    headers: {
-//     Authorization: `Bearer ${localStorage.getItem("token")}`,
-//    },
-//    {
-//       player,
-//       video_link,
-//       objective,
-//       start_date,
-//       final_date,
-//      },
-// })
+ console.log(video_link)
+ console.log(start_date)
+ console.log(final_date)
+ console.log(objective)
 
  return (
   <Dashboard>
@@ -263,62 +212,57 @@ console.log(objective);
      ></Table>
     )}
 
-    {isAssigned && 
-   //  openModal &&
+    {isAssigned && (
+     //  openModal &&
      <Modal
       title='Please choose dates and time of challenge reservation'
       visible={isAssigned}
       okText='Reserve'
       onCancel={() => {
-      resetAssign()
-     
+       resetAssign()
       }}
       // onOk={twoCallsAgain}
-      onOk={assign} 
-
-     >  
-       <Form layout='vertical'>
-{/*       
+      onOk={assign}
+     >
+      <Form layout='vertical'>
+       {/*       
        {challenges.map((chall) => (
            <div> */}
-        <Form.Item name='link_video' label='Link Video'>
-        
+       <Form.Item name='link_video' label='Link Video'>
         <Input
          value={video_link}
          //  onChange={(e) => handle(e)}
-          onChange={(e)=>setVideo_link(e.target.value)}
-          name='video_link'
-          placeholder='Insert video link'
-          type='text'
-         />
-
-        </Form.Item>
-        <Form.Item name='objective' label='Objective'>
-         <Input
+         onChange={(e) => setVideo_link(e.target.value)}
+         name='video_link'
+         placeholder='Insert video link'
+         type='text'
+        />
+       </Form.Item>
+       <Form.Item name='objective' label='Objective'>
+        <Input
          value={objective}
-          onChange={(e) => setObjective(e.target.value)}
-          name='objective'
-          placeholder='Write your objective for this challenge'
-          type='text'
-         />        
-              
-        </Form.Item>
-        {/* ))} */}
-  
-        <Form.Item name='datePicker'>
+         onChange={(e) => setObjective(e.target.value)}
+         name='objective'
+         placeholder='Write your objective for this challenge'
+         type='text'
+        />
+       </Form.Item>
+       {/* ))} */}
+
+       <Form.Item name='datePicker'>
         <input
-      type='date'
-      name='Start Date'
-      value={start_date}
-      onChange={(e) => setStart_date(e.target.value)}
-     />
-     <input
-      type='date'
-      name='Final Date'
-      value={final_date}
-      onChange={(e) => setFinal_date(e.target.value)}
-     />
-         {/* <RangePicker
+         type='date'
+         name='Start Date'
+         value={start_date}
+         onChange={(e) => setStart_date(e.target.value)}
+        />
+        <input
+         type='date'
+         name='Final Date'
+         value={final_date}
+         onChange={(e) => setFinal_date(e.target.value)}
+        />
+        {/* <RangePicker
          value={selectedDate}
           selected={selectedDate}
           onChange={setSelectedDate}
@@ -329,11 +273,10 @@ console.log(objective);
           minDate={new Date()}
           disabledDate={(current) => disablePastDates(current)}
          /> */}
-        </Form.Item>
-       </Form>
-  
-     </Modal> 
-}  
+       </Form.Item>
+      </Form>
+     </Modal>
+    )}
    </div>
   </Dashboard>
  )

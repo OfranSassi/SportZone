@@ -26,10 +26,11 @@ exports.assignChallenge = async (req, res) => {
   const coach = await User.findOne({ _id: req.userId });
   const chall = await Challenge.findOne({ _id: req.body.challenge });
   let challengeplayer = new Challengeplayer({
+    video_link: req.body.video_link,
     start_date: req.body.startdate,
     final_date: req.body.finaldate,
-    //objective: chall.objective,
-    objective: 'test',
+    objective: chall.objective,
+    // objective: 'test',
     done: false,
     player: player._id,
     challenge: chall._id,
@@ -45,12 +46,25 @@ exports.assignChallenge = async (req, res) => {
 //     res.json({ challenges: challenges });
 //   });
 // };
+
+exports.showChallengesByPlayer = async (req, res) => {
+  //  Challenge.find({ coach: req.userId }, function (err, challenges) {
+  //    res.json({ challenges: challenges });
+  //  });
+  
+   Challenge.find({ coach: req.userId , player:req.params.id  })
+   .populate('player').populate('coach').exec((err, challenges) => {
+    res.json({ challenges: challenges });
+   })
+      
+  };
+
 exports.showChallenges = async (req, res) => {
   //  Challenge.find({ coach: req.userId }, function (err, challenges) {
   //    res.json({ challenges: challenges });
   //  });
   
-   Challenge.find({ coach: req.userId })
+   Challenge.find({ coach: req.userId  })
    .populate('player').populate('coach').exec((err, challenges) => {
     res.json({ challenges: challenges });
    })
@@ -76,28 +90,96 @@ exports.deleteChallenge = (req, res) => {
   
 
 //modifier events
-exports.updateChallenge = async (req, res) => {
-  // const events = await Events.findById( {_id:req.body.events});
+// exports.updateChallenge = async (req, res) => {
+//   // const events = await Events.findById( {_id:req.body.events});
 
-  Chellenge.findOneAndUpdate(
+
+//   //   const challenge = await Challenge.findById( req.params.id)
+//   // console.log("challenge1 : " , challenge)
+//        // update the user object found using findOne
+//       //  challenge.video_link = req.body.video_link
+//       //  challenge.objective = req.body.objective
+//       //  challenge.start_date = req.body.start_date
+//       //  challenge.final_date = req.body.final_date
+//       try {
+//         await Challenge.findByIdAndUpdate(req.params.id, {
+//           video_link: req.body.video_link,
+//           objective: req.body.objective,
+//           start_date: req.body.start_date,
+//           final_date: req.body.final_date,
+//         });
+//         // Send response in here
+//         res.send('Item Updated!');
+  
+//       } catch(err) {
+//           console.error(err.message);
+//           res.send(400).send('Server Error');
+//       }
+//       //  Challenge.findByIdAndUpdate({_id:req.params.id} , req.body)
+//       //  Challenge.sa
+//        // now update it in MongoDB
+//       //  Challenge.updateMany(function (err, challenge) {
+//       //     if (err) {
+//       //       res.status(400).json({
+//       //         error: err,
+//       //       });
+//       //     } else {
+//       //       res.status(200).json({
+//       //           challenge,
+//       //       });
+//       //     }
+//       //   })
+          
+//       }
+
+
+
+
+
+
+
+  // Challenge.findOneAndUpdate(
+  //   { _id: req.params.id },
+  //   {
+  //     $set: {
+
+  //       video_link: req.body.video_link,
+  //       objective: req.body.objective,
+  //       start_date: req.body.start_date,
+  //       final_date: req.body.final_date,
+  //       // coach: coach._id,
+  //       // player:player._id,
+  //     },
+  //   },
+    // function (err, challenge) {
+    //   if (err) {
+    //     res.status(400).json({ msg: "Something wrong when updating data!" });
+    //   } else {
+    //     res.json({ challenge });
+    //     console.log(challenge);
+    //   }
+    // }
+  // )
+// };
+exports.updateChallenge = (req, res) => {
+  //const location = await Training_location.findById(req.params.id);
+
+  Challenge.findOneAndUpdate(
     { _id: req.params.id },
     {
       $set: {
-        label: req.body.label,
+        video_link: req.body.video_link,
+        objective: req.body.objective,
         start_date: req.body.start_date,
         final_date: req.body.final_date,
-        location: location._id,
-        coach: coach._id,
-        state: req.body.state,
-        details: req.body.details,
       },
     },
-    function (err, events) {
+    function (err, challenge) {
       if (err) {
         res.status(400).json({ msg: "Something wrong when updating data!" });
       } else {
-        res.json({ events });
-        console.log(events);
+        res.json({ challenge });
+        console.log(challenge);
       }
     }
   );

@@ -9,7 +9,7 @@ import {
 
 // pages
 import "./App.css"
-// import Evenement from "./Pages/Coach/Evenementpage/Evenementpage"
+
 import Evenement from "./Pages/Coach/Evenementpage/Coachevent"
 import Challengedetails from "./Pages/Coach/challenge/Challengedetails"
 
@@ -24,13 +24,12 @@ import Mailer from "./components/Mailer"
 import RegisterCoach from "./Pages/Visitor/RegisterCoach"
 import RegisterPlayer from "./Pages/Visitor/RegisterPlayer"
 import LocationPage from "./Pages/Coach/location/LocationPage"
-import Challenges from "./Pages/Player/challenges/Challenges"
 import AsignedChallenge from "./Pages/Coach/Players/challenges/AsignedChallenge"
 import Profileplayer from "./Pages/Coach/Players/Profileplayer"
 import RejectFeedback from "./Pages/Coach/Sessions/reject&feedbak/RejectFeedback"
 import { getCurrentUser } from "./services/coachservices/auth"
 import LocationDetails from "./Pages/Coach/location/LocationDetails"
-// import Events from "./Pages/Coach/Events/Events"
+import EventDetails from "./Pages/Coach/Evenementpage/Eventdetails"
 import Sessions from "./Pages/Coach/Sessions/Sessions"
 //import ProgrammePage from "./Pages/Coach/Programme/ProgrammePage"
 
@@ -107,20 +106,21 @@ function App() {
 
    <Route path='/player-profile' element={<Pprofile />} />
 
-   <Route path='/player/challenges' element={<Challenges />} />
    <Route path='*' element={<div>not found</div>} />
 
      <Route path='/coach-session' element={<Sessions />} />
      <Route path='/programmesession-page' element={<Programme_session/>} />
      {/* <Route path='/coach-events' element={<Evenement />} /> */}
-     <Route path='/coach-events' element={<Evenement />} />
+
      
      <Route path='/coach-abonnement' element={<Abonnementpage />} />
 {/* 
      <Route path='/coach-challenge' element={<AsignedChallenge/>}/> */}
      <Route path='/coach-challenge' element={<ChallengeForm/>}/>
-
      <Route path='/coach-challenge-details' element={<Challengedetails/>}/>
+
+     <Route path='/coach-events' element={<Evenement />} />
+     <Route path='/coach/events/details' element={<EventDetails/>}/>
 
      
     </Routes>

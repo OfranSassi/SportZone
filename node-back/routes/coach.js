@@ -102,6 +102,13 @@ router.get(
   [authJwt.verifyToken, authJwt.isCoach],
   coachControllerChallenge.showChallenges
 );
+// get challenge by player
+router.get(
+  "/challenge/player/:id",
+  jsonParser,
+  [authJwt.verifyToken, authJwt.isCoach],
+  coachControllerChallenge.showChallengesByPlayer
+);
 //feedback session
 router.put(
   "/session/feedback/:id",
@@ -285,5 +292,14 @@ router.get(
   [authJwt.verifyToken, authJwt.isCoach],
   coachControllerEvents.getEventsById
 );
+
+//get events by id
+router.get(
+  "/events/player/:id",
+  jsonParser,
+  [authJwt.verifyToken, authJwt.isCoach],
+  coachControllerEvents.showEventsByPlayer
+);
+
 
 module.exports = router;

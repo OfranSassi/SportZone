@@ -5,17 +5,17 @@ var Location = require ("../../models/training_location")
 //ajouter un evenement 
 exports.createEvents = async(req,res)=>{
     const coach = await User.findById(req.userId);
-    // const location = await Location.findById(req.params.id);
+    const player = await User.findById(req.body.player);
+    const location = await Location.findById(req.body.location);
     let events = new Events({
+     player: player._id, 
     label: req.body.label,
     start_date:req.body.start_date,
     final_date:req.body.final_date,
-    location:req.body.location,
+    location:location._id,
     coach: coach._id,
     state:req.body.state,
     details:req.body.details,
-    users_participated:req.body.users_participated,
-    users_interested:req.body.users_interested,
     });
     await events.save();
     coach.events.push(events);
@@ -52,7 +52,7 @@ exports.deleteEvents = (req, res) => {
 
   //modifier events
   exports.update_events = async (req, res) => {
-    // const events = await Events.findById( {_id:req.body.events});
+    const location = await Location.findById(req.body.location);
   
     Events.findOneAndUpdate(
       { _id: req.params.id },
@@ -89,3 +89,16 @@ exports.deleteEvents = (req, res) => {
         }
       };
   
+// 
+      exports.showEventsByPlayer = async (req, res) => {
+        //  Challenge.find({ coach: req.userId }, function (err, challenges) {
+        //    res.json({ challenges: challenges });
+        //  });
+        
+         Events.find({ coach: req.userId , player:req.params.id  })
+         .populate('player').populate('coach').populate('location').exec((err, events) => {
+          res.json({ events: events });
+         })
+            
+        };
+      
