@@ -130,7 +130,7 @@ export default function Players() {
 
  return (
   <Dashboard>
-   {/* <div className='players' /> */}
+   {/* <div className='players' /> */} 
    <center>
     {" "}
     <h2> Players</h2>

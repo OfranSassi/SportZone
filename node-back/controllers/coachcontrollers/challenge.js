@@ -1,7 +1,7 @@
 var User = require("../../models/user");
 var Challenge = require("../../models/challenge");
 var Challengeplayer = require("../../models/challengeplayer");
-// create challenge
+// create challenge 
 exports.createChallenge = async (req, res) => {
   const coach = await User.findOne({ _id: req.userId });
   const player = await User.findOne({ _id: req.body.player });

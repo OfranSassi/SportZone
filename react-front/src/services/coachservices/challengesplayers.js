@@ -13,7 +13,7 @@ export const assignChallenge = async (
 ) => {
  const res = await axios.post(
   API_URL + `/assign`,
-  //those are attributes found in the model changellenge
+  //those are attributes found in the model changellenge 
   {
    player,
    video_link,

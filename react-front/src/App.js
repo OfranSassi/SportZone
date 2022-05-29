@@ -29,7 +29,7 @@ import Sessions from "./Pages/Coach/Sessions/Sessions"
 import Abonnementpage from "./Pages/Coach/abonnement/abonnementpage"
 import ChallengeForm from "./Pages/Coach/challenge/Challengeform"
 
-// import Axios from 'axios'
+// import Axios from 'axios' 
 
 function App() {
  const [currentUser, setCurrentUser] = useState(null)
