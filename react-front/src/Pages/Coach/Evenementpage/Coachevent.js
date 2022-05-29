@@ -59,7 +59,7 @@ export default function Coachevent() {
       id: row._id,
      }))
     )
-    //callilng for LOCATION fields
+    //callilng for LOCATION fields 
     setLoading(false)
     const location = await getLocations()
     setLocation(

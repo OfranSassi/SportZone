@@ -34,7 +34,7 @@ export const createEvents = async (
    ).then((res) => {
     console.log("------", res)
    })
-//name of the modal bellow
+//name of the modal bellow 
  return res.data.events
 }
 //players

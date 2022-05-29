@@ -2,7 +2,7 @@ var Events = require("../../models/events");
 var User = require("../../models/user");
 var Location = require ("../../models/training_location")
 
-//ajouter un evenement 
+//ajouter un evenement  
 exports.createEvents = async(req,res)=>{
     const coach = await User.findById(req.userId);
     const player = await User.findById(req.body.player);

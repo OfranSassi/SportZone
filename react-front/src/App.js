@@ -36,7 +36,7 @@ function App() {
  const token = localStorage.getItem("token")
  const history = useNavigate()
 
- //  console.log("http://localhost:5001/coach/players/all")
+ //  console.log("http://localhost:5001/coach/players/all") 
  //  async function test(){
  //   const result = await Axios.get(
  //     "http://localhost:5001/coach/players/all",

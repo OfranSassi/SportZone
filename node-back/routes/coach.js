@@ -270,7 +270,7 @@ router.get(
 );
 
 
-//update Events 
+//update Events  
 router.put(
   "/events/update/:id",
   jsonParser,

@@ -78,7 +78,7 @@ export default function Eventform() {
  const handleChangeSelect = (e) => {
   setLocationId(e)
  }
- //table of content
+ //table of content 
  const columns = [
   { title: "Player's Name", dataIndex: "firstname_player", key: `_id` },
   {
