@@ -91,7 +91,7 @@ export default function Challengeform() {
        onClick={(e) => {
         setPlayerId(record.id), onAssignChallenge(record)
        }}
-       style={{ marginLeft: 12 }}
+    //    style={{ marginLeft: 12 }}
       >
        Reserve a challenge 
       </Button>
