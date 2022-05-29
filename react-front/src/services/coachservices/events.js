@@ -5,34 +5,35 @@ const API_URL2 = "http://localhost:5001/coach/players/all"
 
 
 export const createEvents = async (
-    player,
-    label,
-    start_date,
-    final_date,
-    location,
-    state,
-    details
+    playerId,
+     label,
+   start_date ,
+     final_date,
+     locationId,
+     state,
+     details,
 ) => {
  const res = await axios.post(
-
-    
-  API_URL + `/assign`,
-  //those are attributes found in the model changellenge
-  {
-   player,
-   label,
-   start_date,
-   final_date,
-   location,
-   state,
-   details
-  },
-  {
-   headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-   },
-  }
- )
+    API_URL + `/create`,
+    {
+     //here continue....
+     player: playerId,
+     coach: "",
+     label: label,
+     start_date: start_date ,
+     final_date: final_date,
+     location: locationId,
+     state: state,
+     details: details,
+    },
+    {
+     headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+     },
+    }
+   ).then((res) => {
+    console.log("------", res)
+   })
 //name of the modal bellow
  return res.data.events
 }
@@ -61,6 +62,7 @@ export const getEventsByPlayer = async (id) => {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
      },
     })
+    console.log(" result.data.events   :",result.data.events)
     return result.data.events
    }
    
@@ -85,3 +87,13 @@ export const getEventsByPlayer = async (id) => {
    
     return res.data.events
    }
+
+   export const deleteEvents = async (id) => {
+    const res = await axios.delete(API_URL + `/delete/${id}`, {
+     headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+     },
+    })
+    return res.data.challenges
+   }
+   

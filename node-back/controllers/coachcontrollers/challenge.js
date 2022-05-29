@@ -11,7 +11,7 @@ exports.createChallenge = async (req, res) => {
     start_date: req.body.start_date,
     final_date: req.body.final_date,
     coach: coach._id,
-    player:player._id,
+    player: player._id,
   });
   await challenge.save();
   coach.challenges.push(challenge);
@@ -40,59 +40,42 @@ exports.assignChallenge = async (req, res) => {
 
   return res.json({ challengeplayer });
 };
-//toutes les challenges
-// exports.showChallenges = async (req, res) => {
-//   Challenge.find({ coach: req.userId }, function (err, challenges) {
-//     res.json({ challenges: challenges });
-//   });
-// };
 
 exports.showChallengesByPlayer = async (req, res) => {
-  //  Challenge.find({ coach: req.userId }, function (err, challenges) {
-  //    res.json({ challenges: challenges });
-  //  });
-  
-   Challenge.find({ coach: req.userId , player:req.params.id  })
-   .populate('player').populate('coach').exec((err, challenges) => {
-    res.json({ challenges: challenges });
-   })
-      
-  };
+  Challenge.find({ coach: req.userId, player: req.params.id })
+    .populate("player")
+    .populate("coach")
+    .exec((err, challenges) => {
+      res.json({ challenges: challenges });
+    });
+};
 
 exports.showChallenges = async (req, res) => {
-  //  Challenge.find({ coach: req.userId }, function (err, challenges) {
-  //    res.json({ challenges: challenges });
-  //  });
-  
-   Challenge.find({ coach: req.userId  })
-   .populate('player').populate('coach').exec((err, challenges) => {
-    res.json({ challenges: challenges });
-   })
-      
-  };
-  //supprimer event
+  Challenge.find({ coach: req.userId })
+    .populate("player")
+    .populate("coach")
+    .exec((err, challenges) => {
+      res.json({ challenges: challenges });
+    });
+};
+//supprimer event
 exports.deleteChallenge = (req, res) => {
-  Challenge.findOneAndDelete(
-      { _id: req.params.id },
-      function (err, challenge) {
-        if (err) {
-          res.status(400).json({
-            error: err,
-          });
-        } else {
-          res.status(200).json({
-              challenge,
-          });
-        }
-      }
-    );
-  };
-  
+  Challenge.findOneAndDelete({ _id: req.params.id }, function (err, challenge) {
+    if (err) {
+      res.status(400).json({
+        error: err,
+      });
+    } else {
+      res.status(200).json({
+        challenge,
+      });
+    }
+  });
+};
 
 //modifier events
 // exports.updateChallenge = async (req, res) => {
 //   // const events = await Events.findById( {_id:req.body.events});
-
 
 //   //   const challenge = await Challenge.findById( req.params.id)
 //   // console.log("challenge1 : " , challenge)
@@ -110,7 +93,7 @@ exports.deleteChallenge = (req, res) => {
 //         });
 //         // Send response in here
 //         res.send('Item Updated!');
-  
+
 //       } catch(err) {
 //           console.error(err.message);
 //           res.send(400).send('Server Error');
@@ -129,41 +112,33 @@ exports.deleteChallenge = (req, res) => {
 //       //       });
 //       //     }
 //       //   })
-          
+
 //       }
 
+// Challenge.findOneAndUpdate(
+//   { _id: req.params.id },
+//   {
+//     $set: {
 
-
-
-
-
-
-  // Challenge.findOneAndUpdate(
-  //   { _id: req.params.id },
-  //   {
-  //     $set: {
-
-  //       video_link: req.body.video_link,
-  //       objective: req.body.objective,
-  //       start_date: req.body.start_date,
-  //       final_date: req.body.final_date,
-  //       // coach: coach._id,
-  //       // player:player._id,
-  //     },
-  //   },
-    // function (err, challenge) {
-    //   if (err) {
-    //     res.status(400).json({ msg: "Something wrong when updating data!" });
-    //   } else {
-    //     res.json({ challenge });
-    //     console.log(challenge);
-    //   }
-    // }
-  // )
+//       video_link: req.body.video_link,
+//       objective: req.body.objective,
+//       start_date: req.body.start_date,
+//       final_date: req.body.final_date,
+//       // coach: coach._id,
+//       // player:player._id,
+//     },
+//   },
+// function (err, challenge) {
+//   if (err) {
+//     res.status(400).json({ msg: "Something wrong when updating data!" });
+//   } else {
+//     res.json({ challenge });
+//     console.log(challenge);
+//   }
+// }
+// )
 // };
 exports.updateChallenge = (req, res) => {
-  //const location = await Training_location.findById(req.params.id);
-
   Challenge.findOneAndUpdate(
     { _id: req.params.id },
     {

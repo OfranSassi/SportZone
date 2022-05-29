@@ -74,8 +74,6 @@ export default function Players() {
        className='mx-2'
        onClick={() => {
         onEditPlayer(record)
-        // setEditingPlayer(record)
-        // setIsEditing(true)
        }}
       />
       <DeleteOutlined
@@ -166,7 +164,7 @@ export default function Players() {
       backgroundColor: "#f1356d",
       borderRadius: "8px",
      }}
-     onClick={() => navigate("/coach-challenges")}
+     onClick={() => navigate("/coach-challenge")}
      type='dashed'
      block
     >

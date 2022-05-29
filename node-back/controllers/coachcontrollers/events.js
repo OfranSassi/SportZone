@@ -7,12 +7,14 @@ exports.createEvents = async(req,res)=>{
     const coach = await User.findById(req.userId);
     const player = await User.findById(req.body.player);
     const location = await Location.findById(req.body.location);
+    console.log("req           ",req.body.location);
+    console.log("location    ",location);
     let events = new Events({
      player: player._id, 
     label: req.body.label,
-    start_date:req.body.start_date,
-    final_date:req.body.final_date,
-    location:location._id,
+    start_date:req.body.start_date == undefined ?"":req.body.start_date,
+    final_date:req.body.final_date == undefined ?"":req.body.final_date,
+    location:location,
     coach: coach._id,
     state:req.body.state,
     details:req.body.details,
@@ -62,17 +64,19 @@ exports.deleteEvents = (req, res) => {
           start_date: req.body.start_date,
           final_date: req.body.final_date,
           location: location._id,
-          coach: coach._id,
+          coach: req.userId,
           state: req.body.state,
           details: req.body.details,
         },
       },
       function (err, events) {
         if (err) {
+          
           res.status(400).json({ msg: "Something wrong when updating data!" });
         } else {
           res.json({ events });
           console.log(events);
+          console.log(req.body.location);
         }
       }
     );
@@ -91,9 +95,7 @@ exports.deleteEvents = (req, res) => {
   
 // 
       exports.showEventsByPlayer = async (req, res) => {
-        //  Challenge.find({ coach: req.userId }, function (err, challenges) {
-        //    res.json({ challenges: challenges });
-        //  });
+   
         
          Events.find({ coach: req.userId , player:req.params.id  })
          .populate('player').populate('coach').populate('location').exec((err, events) => {

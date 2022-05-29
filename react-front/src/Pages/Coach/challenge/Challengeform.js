@@ -1,22 +1,15 @@
-import {
- Button,
- Table,
- Modal,
- DatePicker,
- message,
- Form,
- Input,
-} from "antd"
+import { Button, Table, Modal, Form, Input , message } from "antd"
 import Dashboard from "../Dashboard"
 import Axios from "axios"
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import {
- assignChallenge,
  getChallenges,
  getPlayers,
+ assign
 } from "../../../services/coachservices/challengesplayers.js"
 import { useNavigate } from "react-router-dom"
+
 
 export default function Challengeform() {
  const [challengeplayer, setChallengeplayer] = useState({})
@@ -24,7 +17,6 @@ export default function Challengeform() {
  const [page, setPage] = useState(1)
  const [pageSize, setPageSize] = useState(10)
  const [loading, setLoading] = useState(false)
- const [openModal, setOpenModal] = useState(true)
  const [error, setError] = useState(false)
  const [challenges, setChallenges] = useState([])
  const [players, setPlayers] = useState([])
@@ -109,13 +101,11 @@ export default function Challengeform() {
        }}
        type='primary'
       >
-       //{" "}
+       {" "}
        {
         <Link
          to={{ path: "/coach-challenge-details/", idplayer: record.id }}
-        >
-         Details
-        </Link>
+        ></Link>
        }
        Details
       </Button>
@@ -135,55 +125,6 @@ export default function Challengeform() {
   setIsAssigned(false)
   setChallengeplayer(null)
  }
-
- const handleChangeDate = (e) => {
-  setChallengeplayer({
-   ...challengeplayer,
-   startdate: e[0].format(),
-   finaldate: e[1].format(),
-  })
- }
- const handle = (e) => {
-  setChallengeplayer({
-   ...challengeplayer,
-   [e.target.name]: e.target.value,
-   // [e.target.objective]: e.target.value,
-   // video_link: e.target.value,
-   // objective: e.target.value,
-  })
- }
-
- const assign = async (challenge) => {
-  try {
-   console.log("player iddddd", playerId)
-   await Axios.post(
-    "http://localhost:5001/coach/challenge/create",
-    {
-     player: playerId,
-     video_link: video_link,
-     objective: objective,
-     start_date: start_date,
-     final_date: final_date,
-    },
-    {
-     headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-     },
-    }
-   ).then((res) => {
-    message.success("Challenge Saved!")
-    console.log("------", res)
-   })
-  } catch (e) {
-   message.error("Something went wrong!")
-   console.log("error")
-  }
- }
-
- console.log(video_link)
- console.log(start_date)
- console.log(final_date)
- console.log(objective)
 
  return (
   <Dashboard>
@@ -213,7 +154,6 @@ export default function Challengeform() {
     )}
 
     {isAssigned && (
-     //  openModal &&
      <Modal
       title='Please choose dates and time of challenge reservation'
       visible={isAssigned}
@@ -221,17 +161,12 @@ export default function Challengeform() {
       onCancel={() => {
        resetAssign()
       }}
-      // onOk={twoCallsAgain}
-      onOk={assign}
+      onOk={()=>{assign (playerId,video_link,objective,start_date,final_date);message.success("Challenge Saved!")}}
      >
       <Form layout='vertical'>
-       {/*       
-       {challenges.map((chall) => (
-           <div> */}
-       <Form.Item name='link_video' label='Link Video'>
+       <Form.Item name='link_video' label='Link Video' title='video_link'>
         <Input
          value={video_link}
-         //  onChange={(e) => handle(e)}
          onChange={(e) => setVideo_link(e.target.value)}
          name='video_link'
          placeholder='Insert video link'
@@ -247,8 +182,6 @@ export default function Challengeform() {
          type='text'
         />
        </Form.Item>
-       {/* ))} */}
-
        <Form.Item name='datePicker'>
         <input
          type='date'
@@ -262,17 +195,6 @@ export default function Challengeform() {
          value={final_date}
          onChange={(e) => setFinal_date(e.target.value)}
         />
-        {/* <RangePicker
-         value={selectedDate}
-          selected={selectedDate}
-          onChange={setSelectedDate}
-         //  onChange={twoCalls}
-         //  onChange={(date) => setSelectedDate(date)}
-          showTime={{ format: "hh:mma" }}
-          format='MMM Do HH:MM'
-          minDate={new Date()}
-          disabledDate={(current) => disablePastDates(current)}
-         /> */}
        </Form.Item>
       </Form>
      </Modal>

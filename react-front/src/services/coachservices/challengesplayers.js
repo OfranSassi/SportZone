@@ -1,3 +1,4 @@
+import { message } from "antd"
 import axios from "axios"
 const API_URL = "http://localhost:5001/coach/challenge"
 const API_URL2 = "http://localhost:5001/coach/players/all"
@@ -29,6 +30,34 @@ export const assignChallenge = async (
 
  return res.data.challengeplayer
 }
+
+export const assign = async (playerId,video_link,objective,start_date,final_date ) => {
+  try {
+
+   await axios.post(
+     API_URL + `/create`,
+    {
+     player: playerId,
+     video_link: video_link,
+     objective: objective,
+     start_date: start_date,
+     final_date: final_date,
+    },
+    {
+     headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+     },
+    }
+   ).then((res) => {
+    //message.success("Challenge Saved!")
+    console.log("------", res)
+   })
+  } catch (e) {
+   message.error("Something went wrong!")
+   console.log("error")
+  }
+ }
+
 //players
 export const getPlayers = async () => {
  const result = await axios.get(API_URL2, {

@@ -8,15 +8,15 @@ let challengeSchema = new Schema({
 
   objective: {
     type: String,
-    // required: true,
+    required: true,
   },
   start_date: {
     type: String,
-    // required: true,
+    required: true,
   },
   final_date: {
     type: String,
-    // required: true,
+    required: true,
   },
 
   coach: { type: mongoose.Schema.Types.ObjectId, ref: "user" },

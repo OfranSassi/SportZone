@@ -16,12 +16,9 @@ let eventsSchema = new Schema(
     },
     final_date: {
          type:String,
-        //  required:true 
+         required:true 
     },
-    // location: { 
-    //     type:String,
-    //     required:true 
-    // },
+
     state: { 
         type:String,
         required:true 
