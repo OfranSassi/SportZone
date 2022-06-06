@@ -2,16 +2,25 @@ import React from "react"
 
 //ant design imports
 import "./Dashboard.css"
-import { Layout } from "antd"
+import { Layout, PageHeader } from "antd"
 
 import Subnav from "../../components/Subnav"
 import MenuBar from "../../components/MenuBar"
 const { Content, Footer } = Layout
 
 export default function Dashboard(props) {
+    function back() {
+        window.history.back()
+    }
  return (
   <div className='Dashboard'>
    <Layout>
+   <PageHeader
+    className="site-page-header"
+    onBack={() => back()}
+    title="Go Back"
+    // subTitle="This is a subtitle"
+  />
     <MenuBar 
     name3='/coach-abonnement'
     > </MenuBar>

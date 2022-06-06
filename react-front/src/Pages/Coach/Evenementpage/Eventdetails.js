@@ -184,7 +184,7 @@ export default function Eventform() {
 
     {isAssigned && (
      <Modal
-      title='Edit Challenge'
+      title='Edit Event'
       visible={isAssigned}
       okText='Save'
       onCancel={() => {

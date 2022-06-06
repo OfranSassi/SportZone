@@ -7,19 +7,13 @@ var authJwt = require("../middleware/auth");
 var jsonParser = bodyParser.json();
 const playerControllerPofil = require("../controllers/playercontrollers/profile");
 const playerControllerChallenge = require("../controllers/playercontrollers/challenge");
-const playerControllerSession = require("../controllers/playercontrollers/session");
+const playerControllerEvents = require("../controllers/playercontrollers/events");
 
 router.get(
   "/profile",
   jsonParser,
   [authJwt.verifyToken, authJwt.isPlayer],
   playerControllerPofil.profile
-);
-router.get(
-  "/session/show/:id",
-  jsonParser,
-  [authJwt.verifyToken, authJwt.isPlayer],
-  playerControllerSession.showSession
 );
 
 router.put(
@@ -41,7 +35,6 @@ router.get(
   [authJwt.verifyToken, authJwt.isPlayer],
   playerControllerChallenge.allChallengesByUser
 );
-
 // mettre à done un de mes défis
 router.put(
   "/challenge/done/:id",
@@ -49,4 +42,22 @@ router.put(
   [authJwt.verifyToken, authJwt.isPlayer],
   playerControllerChallenge.doneChallenge
 );
+
+// voir mes events
+router.get(
+  "/events/all",
+  jsonParser,
+  [authJwt.verifyToken, authJwt.isPlayer],
+  playerControllerEvents.allEventsByUser
+);
+// choisir participating ou pas à un de mes events
+router.put(
+  "/events/participating/:id",
+  jsonParser,
+  [authJwt.verifyToken, authJwt.isPlayer],
+  playerControllerEvents.participatingEvents
+);
+
+
+
 module.exports = router;

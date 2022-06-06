@@ -1,159 +1,119 @@
-/* eslint-disable no-console */
-import React, { useState, useEffect } from "react"
-//import { useNavigate } from "react-router-dom"
-// import pic_session from "../../../image/maria.png"
-import Dashboard from "../Dashboard"
-import * as moment from "moment"
-
 import {
  Button,
  Table,
  Modal,
- Input,
  Form,
+ Input,
  Select,
  DatePicker,
- Rate,
- Slider,
- Checkbox,
- Row,
- Col,
+ message,
 } from "antd"
-
+import Dashboard from "../Dashboard"
+import React, { useEffect, useState } from "react"
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
-//import Sider from "antd/lib/layout/Sider"
-//import Sessions from './Sessions';
-//import { Checkbox, Row, Col } from "antd"
-import { DownloadOutlined, PlusOutlined } from "@ant-design/icons"
-import { useParams } from "react-router-dom"
-//import Sessions from "./Sessions"
-//import { moment } from "moment"
 
-function Sessions() {
- const [disabled, setdisabled] = useState(false)
- const [isEditing, setIsEditing] = useState(false)
- const [isAdding, setIsAdding] = useState(false)
- const [editingSession, setEditingSession] = useState({
-  date: moment("2090-10-10"),
- })
+import { useNavigate } from "react-router-dom"
+import {
+ getPlayers,
+ assign,
+ createSession,
+ getSessions,
+ updateSession,
+ deleteSession,
+} from "../../../services/coachservices/sessionRF"
+import {
+ getLocationsByCoach,
+ getLocations,
+ getLocationById,
+} from "../../../services/coachservices/locations"
+import moment from "moment"
+const { Option } = Select
 
- //  const [sessionByDay, setSessionByDay] = useState([])
- //  const { sessionDate } = useParams()
- //  useEffect(
- //   () =>
- //    useEffect(() => {
- //     const fetchData = async () => {
- //      setLoading(true)
- //      const result = await fetchSessionByDate(sessionDate)
- //      setSessionByDay(result)
- //      console.log(result)
- //      setLoading(false)
- //     }
- //     fetchData()
- //    }, [sessionDate]),
- //   console.log(sessionByDay)
- //  )
+export default function Sessions() {
+ const [isAssigned, setIsAssigned] = useState(false)
+ const [page, setPage] = useState(1)
+ const [pageSize, setPageSize] = useState(10)
+ const [loading, setLoading] = useState(false)
+ const [error, setError] = useState(false)
+ const [players, setPlayers] = useState([])
+ const [session, setSession] = useState([])
+ const [title, setTitle] = useState("")
+ const [objective, setObjective] = useState("")
+ const [date, setDate] = useState("")
+ const [target, setTarget] = useState("")
+ const [prefix1, setPrefix1] = useState("")
+ const [prefix2, setPrefix2] = useState()
 
- const [addingSession, setAddingSession] = useState({
-  player: "",
-  title: "",
-  date: "",
-  feedback: "",
-  skills: "",
-  program: "",
- })
+ const [program, setProgram] = useState("")
+ const [playerId, setPlayerId] = useState([])
+ const [locationId, setLocationId] = useState([])
+ const [location, setLocation] = useState([])
 
- //setPlayerValue("abc")
- //const navigate = useNavigate()
+ //  const [prefix2, setPrefix2] = useState()
+ const [etatRecord, setEtatRecord] = useState(false)
+ const navigate = useNavigate()
 
- //  const State = {
- //     size: String,
- //   };
- /*
- const normFile = (e) => {
-  console.log("Upload event:", e)
+ useEffect(() => {
+  const fetchData = async () => {
+   setLoading(true)
+   try {
+    const plyrs = await getPlayers()
+    setPlayers(
+     plyrs.map((row) => ({
+      firstname: row.firstname,
+      lastname: row.lastname,
+      email: row.email,
+      isactive: row.isactive,
+      id: row._id,
+     }))
+    )
+    //this is session
+    setLoading(false)
+    const sess = await getSessions()
+    console.log("Session : ", sess)
+    setSession(
+     sess.map((row) => ({
+      title: row.title,
+      date: row.date,
+      target: row.target,
+      location: row.location["name"],
+      program: row.program,
+      objective: row.objective,
+      id: row._id,
+     }))
+    )
 
-  if (Array.isArray(e)) {
-   return e
+    //callilng for LOCATION fields
+    setLoading(false)
+    const location = await getLocations()
+    setLocation(
+     location.map((row) => ({
+      name: row.name,
+      city: row.city,
+      country: row.country,
+      address: row.address,
+      id: row._id,
+     }))
+    )
+   } catch (e) {
+    // console.log("e : ", e)
+    setLoading(false)
+    setError(true)
+   }
   }
 
-  return e && e.fileList
- }
-*/
- const config = {
-  rules: [
-   {
-    type: "object",
-    required: true,
-    message: "Please select time!",
-   },
-  ],
- }
+  fetchData()
+ }, [])
 
- const prefixSelector = (
-  <Form.Item name='prefix' noStyle>
-   <Select
-    style={{
-     width: 70,
-    }}
-   >
-    {" "}
-    <Option value='min'>Minutes</Option>
-    <Option value='sec'>Secondes</Option>
-    <Option value='h'>Heures</Option>
-    <Option value=''>Métre</Option>
-    <Option value='kg'>KG</Option>
-    <Option value='km'>KM</Option>
-   </Select>
-  </Form.Item>
- )
-
- const [sessions, setSessions] = useState([
-  {
-   id: 1,
-   title: "seance de préparation",
-   date: "02/05/2021",
-   player: "ali",
-   feedback: "amelioration de vitesse",
-   programme: "Extension de bras à la corde  3 x 10 ",
-   action: "",
-  },
-  {
-   id: 2,
-   title: "seance de cardio",
-   date: "02/06/2021",
-   player: "zayn",
-   feedback: "pas mal",
-   programme: "Banc lombaire  : 3 x 10",
-   action: "",
-  },
-  {
-   id: 3,
-   title: "seance de de stabilisation",
-   date: "02/03/2021",
-   player: "arij",
-
-   feedback: "objectif atteint",
-   programme: "Tapis de course ou elliptique pendant 30 minutes ",
-  },
- ])
+ //table of content
  const columns = [
   { title: "Title", dataIndex: "title" },
-  { title: "Player", dataIndex: "player" },
-  {
-   title: "Date",
-   dataIndex: "date",
+  { title: "Player", dataIndex: "firstname_player", key: `_id` },
+  { title: "Date", dataIndex: "date" },
+  { title: "Location", dataIndex: "name", key: `_id` },
+  { title: "Objective", dataIndex: "objective" },
+  { title: "Target", dataIndex: "target" },
 
-   sorter: (record1, record2) => {
-    return record1.date > record2.date
-   },
-  },
-
-  {
-   title: "FEEDBACK",
-   dataIndex: "feedback",
-  },
-  { title: "Programme Session", dataIndex: "programme" },
   {
    title: "Actions",
    render: (record) => {
@@ -161,11 +121,8 @@ function Sessions() {
      <>
       <EditOutlined
        className='mx-2'
-       onClick={() => {
-        onEditSession(record)
-        console.log(record)
-        //   setEditingSession(record)
-        //   setIsEditing(true)
+       onClick={(e) => {
+        onAssignSession(record)
        }}
       />
       <DeleteOutlined
@@ -180,583 +137,279 @@ function Sessions() {
    },
   },
  ]
- const [page, setPage] = useState(1)
- const [pageSize, setPageSize] = useState(10)
 
  const onDeleteSession = (record) => {
   Modal.confirm({
-   title: "Are you sure, you want to CANCEL this session ?",
+   title: "Are you sure, you want to delete this challenge record?",
    okText: "Yes",
    okType: "danger",
    onOk: () => {
-    setSessions((pre) => {
-     return pre.filter((session) => session.id !== record.id)
-    })
+    deleteSession(record.id)
+    setEtatRecord(true)
    },
   })
  }
- const onEditSession = (record) => {
-  setEditingSession({ ...record })
-  setIsEditing(true)
+ function onChange(filters, dataIndex) {
+  console.log("params", filters, dataIndex)
  }
- const resetEditing = () => {
-  setIsEditing(false)
-  setEditingSession(null)
+ const onAssignSession = (record) => {
+  setIsAssigned(true)
+  setSession({ ...session, player: record._id })
+ }
+ const resetAssign = () => {
+  setIsAssigned(false)
+  setSession(null)
+ }
+ //  const handleChangeDate = (e) => {
+ //   setSession({
+ //    ...setSession,
+ //    start_date: e[0].format(),
+ //    final_date: e[1].format(),
+ //   })
+ //  }
+
+ //  const handleChange = (e) => {
+ //   // ({ value });
+ //   setPrefix1(e)
+ //  }
+
+ const handleChangeSelect = (e) => {
+  setLocationId(e)
  }
  const onFinish = (values) => {
   console.log(values)
  }
+ //  const assign = async (session) => {
+ //   try {
+ //    await createSession(
+ //     playerId,
+ //     title,
+ //     date,
+ //     locationId,
+ //     objective,
+ //     target
+ //    )
+ //   } catch (e) {
+ //    console.log("error")
+ //   }
+ //  }
+ //congif and prefixSelector above
+ const config = {
+  rules: [
+   {
+    type: "object",
+    required: true,
+    message: "Please select time!",
+   },
+  ],
+ }
 
+ const prefixSelector = (
+  <Form.Item name='prefix1' noStyle>
+   <Select
+    defaultValue='Km'
+    name='prefix1'
+    id='prefix1'
+  
+    style={{
+     width: 70,
+    }}
+      value={prefix1}
+    onChange={(e) => setPrefix1(e.target.value)}
+   >
+    {" "}
+    <Option value='Km'>Km</Option>
+    <Option value='m'>m</Option>
+   </Select>
+  </Form.Item>
+ )
+
+ const prefixTimer = (
+  <Form.Item name='prefix2' noStyle>
+   <Select
+    value={prefix2}
+    style={{
+     width: 70,
+    }}
+    onChange={(e) => setPrefix2(e.target.value)}
+    name='prefix2'
+   >
+    {" "}
+    <Select.Option value='hr'>hr</Select.Option>
+    <Select.Option value='min'>min</Select.Option>
+    <Select.Option value='sec'>sec</Select.Option>
+   </Select>
+  </Form.Item>
+ )
  return (
   <Dashboard>
-   {/* <div className='sessions' /> */}
-   <center> </center>
-   <div></div>
-   <div className='all-sessions'>
-    <br></br>
-    <Form>
-     <Form.Item name='location' label=''>
-      <Select
-       placeholder='select location '
-       style={{
-        width: "15%",
-       }}
-      >
-       <Option value='loc1'>lac</Option>
-       <Option value='loc22'>arianna</Option>
-       <Option value='loc3'>tunis centre ville</Option>
-      </Select>
-      <Button
-       type='primary'
-       onClick={() => {
-        setIsAdding(true)
-       }}
-      >
-       {" "}
-       ADD Location{" "}
-      </Button>
-
-      {/* <Input
-      addonBefore={prefixSelector}
-      style={{
-       width: "15%",
-      }}
-     /> */}
-     </Form.Item>{" "}
-    </Form>
+   <div>
+    <center>
+     {" "}
+     <h2> Create a Session</h2>
+    </center>
+    {loading && <div>Loading ... </div>}
+    {error && <div>Error....</div>}
     <Button
      type='primary'
      onClick={() => {
-      setIsAdding(true)
+      setIsAssigned(true)
      }}
-     style={{
-      width: "26.5%",
-     }}
+     style={{ marginLeft: 12 }}
     >
-     {" "}
-     Add a new Session
+     Create a Session
     </Button>
-    {isAdding && (
+
+    {!loading && (
+     <Table
+      rowKey={Math.random()}
+      onChange={onChange}
+      columns={columns}
+      dataSource={session}
+      pagination={{
+       current: page,
+       pageSize: pageSize,
+       onChange: (page, pageSize) => {
+        setPage(page)
+        setPageSize(pageSize)
+       },
+      }}
+     ></Table>
+    )}
+
+    {isAssigned && (
      <Modal
-      title='new Session'
-      visible={isAdding}
+      //  value={item._id}
+      title='Make a Session'
+      visible={isAssigned}
       okText='Save'
+      //  onClick={item._id}
       onCancel={() => {
-       setAddingSession(null)
-       setIsAdding(false)
+       resetAssign()
       }}
       onOk={() => {
-       setIsAdding(false)
-       setAddingSession({ id: parseInt(Math.random() * 1000) })
-       setSessions((pre) => {
-        console.log(addingSession)
-        return [...pre, addingSession]
-       })
+       assign(title, playerId, date, locationId, objective, target)
+       message.success("Event Saved!")
       }}
+      //  onOk={assign}
      >
-      <Form
-       initialValues={addingSession}
-       layout='vertical'
-       onFinish={onFinish}
-      >
-       <Form.Item className='title' label='Title'>
+      <Form layout='vertical' onFinish={onFinish}>
+       <Form.Item name='title' label='Name of the Title'>
         <Input
-         className='input'
-         onChange={(value) =>
-          setAddingSession((session) => {
-           session.title = value
-           return session
-          })
-         }
+         value={title}
+         onChange={(e) => setTitle(e.target.value)}
+         name='title'
+         placeholder='friendly match'
+         type='text'
         />
        </Form.Item>
-       <Form.Item
-        name='player'
-        label='Player'
-        rules={[
-         {
-          required: true,
-          message: "Please select Player!",
-         },
-        ]}
-       >
+
+       <Form.Item label='Player'>
         <Select
-         placeholder='select your Player'
-         onChange={(value) =>
-          setAddingSession((session) => {
-           session.player = value
-           return session
-          })
+         placeholder='Select Player'
+         style={{ width: "50%" }}
+         //  onClick={() => {
+         //   onAssignSession(item)
+         //  }}
+         onChange={(key) =>
+          setLocationId(players.find((c) => c.firstname == key).id)
          }
         >
-         <Option value='Ali'>Ali</Option>
-         <Option value='Rami'>Rami</Option>
-         <Option value='mohamed'>mohamed</Option>
-         <Option value='monjia'>monjia</Option>
-         <Option value='sophia'>sophia</Option>
+         {players.map((item) => {
+          return (
+           <Select.Option key={item._id} value={item.firstname}>
+            {item.firstname}
+           </Select.Option>
+          )
+         })}
         </Select>
        </Form.Item>
-
-       <Form.Item label='DatePicker' {...config}>
+       <Form.Item title='DatePicker' {...config} label='Session Date'>
         <DatePicker
          showTime
          format='YYYY-MM-DD HH:mm:ss'
          style={{
           width: "100%",
          }}
-         //     onChange={(value) =>
-         //      setAddingSession((session) => {
-         //       session.date = value
-         //       return session
-         //      })
-         //     }
+         value={date}
+         onOk={(e) => setDate(e)}
+         required='true'
         />
        </Form.Item>
-
-       {/* <Input
-         className='input'
-         onChange={(value) =>
-          setAddingSession((session) => {
-           session.skills = value
-           return session
-          })
+       <Form.Item label='Location'>
+        <Select
+         placeholder='Select location'
+         style={{ width: "50%" }}
+         //  onClick={() => {
+         //   onAssignSession(item)
+         //  }}
+         onChange={(key) =>
+          handleChangeSelect(location.find((c) => c.name == key).id)
          }
-        /> */}
-       <Form.Item name='checkbox-group' label='static'>
-        <Checkbox.Group>
-         <Row>
-          <Col span={8}>
-           <Checkbox
-            value='A'
-            style={{
-             lineHeight: "32px",
-            }}
-           >
-            A
-           </Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox
-            value='B'
-            style={{
-             lineHeight: "32px",
-            }}
-           >
-            B
-           </Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox
-            value='C'
-            style={{
-             lineHeight: "32px",
-            }}
-           >
-            C
-           </Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox
-            value='D'
-            style={{
-             lineHeight: "32px",
-            }}
-           >
-            D
-           </Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox
-            value='E'
-            style={{
-             lineHeight: "32px",
-            }}
-           >
-            E
-           </Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox
-            value='F'
-            style={{
-             lineHeight: "32px",
-            }}
-           >
-            F
-           </Checkbox>
-          </Col>
-         </Row>
-        </Checkbox.Group>
-        {/* <Checkbox.Group style={{ width: "100%"
-         }} onChange={onChange(checkedValues)}/>
-
-               <Row>
-          <Col span={8}>
-           <Checkbox value='A'>A</Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox value='B'>B</Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox value='C'>C</Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox value='D'>D</Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox value='E'>E</Checkbox>
-          </Col>
-         </Row>
-        </Checkbox.Group> */}
+        >
+         {location.map((item) => {
+          return (
+           <Select.Option key={item._id} value={item.name}>
+            {item.name}
+           </Select.Option>
+          )
+         })}
+        </Select>
        </Form.Item>
 
-       <Form.Item name='checkbox-group' label='Skills'>
-        <Checkbox.Group>
-         <Row>
-          <Col span={8}>
-           <Checkbox
-            value='vitesse'
-            style={{
-             lineHeight: "32px",
-            }}
-           >
-            vitesse
-           </Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox
-            value='B'
-            style={{
-             lineHeight: "32px",
-            }}
-           >
-            poids
-           </Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox
-            value='C'
-            style={{
-             lineHeight: "32px",
-            }}
-           >
-            pui de main
-           </Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox
-            value='D'
-            style={{
-             lineHeight: "32px",
-            }}
-           >
-            D
-           </Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox
-            value='E'
-            style={{
-             lineHeight: "32px",
-            }}
-           >
-            E
-           </Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox
-            value='F'
-            style={{
-             lineHeight: "32px",
-            }}
-           >
-            F
-           </Checkbox>
-          </Col>
-         </Row>
-        </Checkbox.Group>
-        {/* <Checkbox.Group style={{ width: "100%"
-         }} onChange={onChange(checkedValues)}/>
-
-               <Row>
-          <Col span={8}>
-           <Checkbox value='A'>A</Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox value='B'>B</Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox value='C'>C</Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox value='D'>D</Checkbox>
-          </Col>
-          <Col span={8}>
-           <Checkbox value='E'>E</Checkbox>
-          </Col>
-         </Row>
-        </Checkbox.Group> */}
-       </Form.Item>
-
-       {/* <Form.Item name='statistic' label='Statistic'>
-        <Input className='input' />
-       </Form.Item> */}
-       {/* <Form.Item name='feedback' label='Feedback'>
+       <Form.Item name='objective' label='Objective'>
         <Input
-         addonBefore={prefixSelector}
+         value={objective}
+         onChange={(e) => setObjective(e.target.value)}
+         name='details'
+         type='text'
+        />
+       </Form.Item>
+       <Form.Item name='target' label='Goal to Reach: Make'>
+        <Input
+         addonAfter={prefixSelector}
+         value={target}
+         onChange={(e) => {
+          setTarget(e.target.value + " " + prefix1)
+         }}
          style={{
           width: "100%",
          }}
         />
-       </Form.Item> */}
-       <Form.Item name='feedback' label='Feedback'>
-        <Input.TextArea
-         showCount
-         maxLength={100}
-         className='input'
-         value={addingSession.id}
-         onChange={(value) =>
-          setAddingSession((session) => {
-           session.feedback = value
-           return session
-          })
-         }
-        />
        </Form.Item>
 
-       <Form.Item name='program-session' label='Program Session'>
-        <Select
-         placeholder='select your Program session'
-         onChange={(value) =>
-          setAddingSession((session) => {
-           session.programme = value
-           return session
-          })
-         }
-        >
+
+
+       <Form.Item name='time' label='in '>
+        <Input
+         addonAfter={prefixTimer}
+         value={target}
+         onChange={(e) => {
+          setTarget(e.target.value + " " + prefix2)
+         }}
+     
+         style={{
+          width: "100%",
+         }}
+        />
+       </Form.Item>
+       <Form.Item
+        name='program'
+        title='Program '
+        label='Program of the Session'
+       >
+        <Select placeholder='select program for session'>
          <Option value='programme1'>programme1</Option>
          <Option value='programme2'>programme2</Option>
          <Option value='programme3'>programme3</Option>
          <Option value='programme4'>programme4</Option>
          <Option value='programme5'>programme5</Option>
         </Select>
-
-        <Button
-         type='red'
-         icon={<PlusOutlined />}
-         size='large'
-         style={{
-          width: "50%",
-         }}
-        />
        </Form.Item>
       </Form>
-     </Modal>
-    )}
-    <Table
-     columns={columns}
-     dataSource={sessions}
-     pagination={{
-      current: page,
-      pageSize: pageSize,
-      onChange: (page, pageSize) => {
-       setPage(page)
-       setPageSize(pageSize)
-      },
-     }}
-     bordered
-     a
-    ></Table>
-
-    {isEditing && (
-     <Modal
-      title='Edit Session'
-      visible={isEditing}
-      okText='Save'
-      onCancel={() => {
-       resetEditing()
-
-       //  setEditingSession(null)
-       //  setIsEditing(false)
-      }}
-      onOk={() => {
-       setSessions((pre) => {
-        return pre.map((session) => {
-         if (session.id === editingSession.id) {
-          return editingSession
-         } else {
-          return session
-         }
-        })
-       })
-       resetEditing()
-      }}
-     >
-      <Form
-       initialValues={editingSession}
-       layout='vertical'
-       onFinish={onFinish}
-      >
-       <Form.Item name='title' label='Title'>
-        <Input
-         className='input'
-         value={editingSession.title}
-         onChange={(e) =>
-          setEditingSession((session) => {
-           session.title = e.target.value
-           return session
-          })
-         }
-        />
-       </Form.Item>
-       <Form.Item
-        name='player'
-        label='Player'
-        rules={[
-         {
-          required: true,
-          message: "Please select Player!",
-         },
-        ]}
-       >
-        <Select
-         placeholder='select your Player'
-         value={editingSession.player}
-         onChange={(value) => {
-          setEditingSession((pre) => {
-           return { ...pre, player: value }
-          })
-         }}
-        >
-         <Option value='Ali'>Ali</Option>
-         <Option value='Rami'>Rami</Option>
-         <Option value='mohamed'>mohamed</Option>
-         <Option value='monjia'>monjia</Option>
-         <Option value='sophia'>sophia</Option>
-        </Select>
-       </Form.Item>
-
-       <Form.Item label='DatePicker' {...config}>
-        <DatePicker
-         showTime
-         format='YYYY-MM-DD HH:mm:ss'
-         style={{
-          width: "100%",
-         }}
-         /*value={editingSession.date}*/
-         onChange={(value) => {
-          setEditingSession((pre) => {
-           return { ...pre, id: value }
-          })
-         }}
-        />
-       </Form.Item>
-       <Form.Item name='rate' label='static1'>
-        <Rate />
-       </Form.Item>
-       <Form.Item name='rate' label='static2'>
-        <Rate />
-       </Form.Item>
-       <Form.Item name='skill' label='Skill1'>
-        <Input
-         addonBefore={prefixSelector}
-         style={{
-          width: "100%",
-         }}
-        />
-       </Form.Item>
-       <Form.Item name='skill' label='Skill2'>
-        <Input
-         addonBefore={prefixSelector}
-         style={{
-          width: "100%",
-         }}
-        />
-       </Form.Item>
-
-       <Form.Item name='slider' label='Skill2'>
-        <Slider
-         marks={{
-          0: "A",
-          20: "B",
-          40: "C",
-          60: "D",
-          80: "E",
-          100: "F",
-         }}
-        />
-       </Form.Item>
-       <Form.Item name='feedback' label='Feedback'>
-        <Input
-         className='input'
-         value={editingSession.feedback}
-         onChange={(e) => {
-          setEditingSession((pre) => {
-           return { ...pre, feedback: e.target.value }
-          })
-         }}
-        />
-       </Form.Item>
-
-       <Form.Item name='program-session' label='Program Session'>
-        <Select
-         placeholder='select your Program session'
-         value={editingSession.programme}
-         onChange={(value) => {
-          setEditingSession((pre) => {
-           return { ...pre, programme: value }
-          })
-         }}
-        >
-         <Option value='programme1'>programme1</Option>
-         <Option value='programme2'>programme2</Option>
-         <Option value='programme3'>programme3</Option>
-         <Option value='programme4'>programme4</Option>
-         <Option value='programme5'>programme5</Option>
-        </Select>
-        <Button
-         type='primary'
-         icon={<DownloadOutlined />}
-         size='large'
-         style={{
-          width: "50%",
-         }}
-        />
-        <Button
-         href='/programmesession-page'
-         type='red'
-         icon={<PlusOutlined />}
-         size='large'
-         style={{
-          width: "50%",
-         }}
-        />
-       </Form.Item>
-      </Form>{" "}
      </Modal>
     )}
    </div>
   </Dashboard>
  )
 }
-export default Sessions

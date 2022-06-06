@@ -302,4 +302,53 @@ router.get(
 );
 
 
+
+//creation session (Session)
+router.post(
+  "/session/create",
+  jsonParser,
+  [authJwt.verifyToken, authJwt.isCoach],
+  coachControllerSession.createSession
+);
+
+//afficher tt les sessions
+router.get(
+  "/session/all",
+  jsonParser,
+  [authJwt.verifyToken, authJwt.isCoach],
+  coachControllerSession.showSession
+);
+
+
+//update Session  
+router.put(
+  "/session/update/:id",
+  jsonParser,
+  [authJwt.verifyToken, authJwt.isCoach],
+  coachControllerSession.update_session
+);
+
+//delete Session
+router.delete(
+  "/session/delete/:id",
+  jsonParser,
+  [authJwt.verifyToken, authJwt.isCoach],
+  coachControllerSession.deleteSession
+);
+//get Session by id
+router.get(
+  "/session/:id",
+  jsonParser,
+  [authJwt.verifyToken, authJwt.isCoach],
+  coachControllerSession.getSessionById
+);
+
+//get Session by id
+router.get(
+  "/session/player/:id",
+  jsonParser,
+  [authJwt.verifyToken, authJwt.isCoach],
+  coachControllerSession.showSessionByPlayer
+);
+
 module.exports = router;

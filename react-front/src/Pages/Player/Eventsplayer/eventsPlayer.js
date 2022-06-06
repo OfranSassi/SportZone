@@ -1,16 +1,15 @@
-import { Button, Table, Modal, Form, Input, Select } from "antd"
-import Dashboard from "../Dashboard"
+import { Button, Table, Modal, Form, Input, Select  } from "antd"
+import Dashboard from "../../Coach/Dashboard"
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import {
  getEvents,
  getPlayers,
  createEvents,
+ playerParticipating
 } from "../../../services/coachservices/events"
 import {
- getLocationsByCoach,
  getLocations,
- getLocationById,
 } from "../../../services/coachservices/locations"
 import moment from "moment"
 
@@ -29,8 +28,7 @@ export default function Coachevent() {
  const [details, setDetails] = useState("")
  const [playerId, setPlayerId] = useState([])
  const [locationId, setLocationId] = useState([])
- const [location, setLocation] = useState([]) 
- const [etatRecord, setEtatRecord] = useState(false)
+ const [location, setLocation] = useState([])
  const navigate = useNavigate()
  useEffect(() => {
   const fetchData = async () => {
@@ -39,8 +37,10 @@ export default function Coachevent() {
     const plyrs = await getPlayers()
     setPlayers(
      plyrs.map((row) => ({
-      firstname: row.firstname,
-      lastname: row.lastname,
+      firstname_coach: row.coach["firstname"],
+      email_coach: row.coach ["email"],
+      label: row.label,
+      status: row.lastname,
       email: row.email,
       isactive: row.isactive,
       id: row._id,
@@ -60,7 +60,7 @@ export default function Coachevent() {
       id: row._id,
      }))
     )
-    //callilng for LOCATION fields
+    //callilng for LOCATION fields 
     setLoading(false)
     const location = await getLocations()
     setLocation(
@@ -78,29 +78,27 @@ export default function Coachevent() {
    }
   }
   fetchData()
- }, [etatRecord])
+ }, [])
  //table of content
  const columns = [
-  { title: "Player's Name", dataIndex: "firstname", key: `_id` },
+  { title: "Coach's Name", dataIndex: "firstname", key: `_id` },
   {
-   title: "Player's Surname",
-   dataIndex: "lastname",
+   title: "Coach's Email", dataIndex: "email",
   },
-  { title: "Email", dataIndex: "email" },
+  { title: "Label", dataIndex: "label" },
 
   {
-   title: "Status",
-   dataIndex: "isactive",
-   render: (isactive) => {
-    return <p>{isactive ? "Active" : "Inactive"}</p>
-   },
-   filters: [
-    { text: "Active", value: true },
-    { text: "Inactive", value: false },
-   ],
-   onFilter: (value, record) => {
-    return record.isactive === value
-   },
+   title: "State", dataIndex: "state",
+//    render: (isactive) => {
+//     return <p>{isactive ? "Active" : "Inactive"}</p>
+//    },
+//    filters: [
+//     { text: "Active", value: true },
+//     { text: "Inactive", value: false },
+//    ],
+//    onFilter: (value, record) => {
+//     return record.isactive === value
+//    },
   },
 
   {
@@ -110,12 +108,10 @@ export default function Coachevent() {
      <>
       <Button
        type='primary'
-       id={record.id.slice(4)}
        onClick={() => {
-        setPlayerId(record.id), onAssignEvents(record), setEtatRecord(true)
+        setPlayerId(record.id), onAssignEvents(record)
        }}
        style={{ marginLeft: 12 }}
-
       >
        Create an Event
       </Button>
@@ -159,9 +155,7 @@ export default function Coachevent() {
  const handleChangeSelect = (e) => {
   setLocationId(e)
  }
- const onFinish = (values) => {
-  console.log(values)
- }
+
  const assign = async (event) => {
   try {
    await createEvents(
@@ -183,7 +177,7 @@ export default function Coachevent() {
    <div>
     <center>
      {" "}
-     <h2> Create and Event</h2>
+     <h2> My Events</h2>
     </center>
     {loading && <div>Loading ... </div>}
     {error && <div>Error....</div>}
@@ -205,41 +199,39 @@ export default function Coachevent() {
     )}
 
     {isAssigned &&
-      (
+     players.map((item) => (
       <Modal
-      //  value={item._id}
+       value={item._id}
        title='Make an Event'
        visible={isAssigned}
        okText='Save'
-      //  onClick={item._id}
+       onClick={item._id}
        onCancel={() => {
         resetAssign()
        }}
        onOk={assign}
-       
       >
-       <Form layout='vertical' onFinish={onFinish}>
+       <Form layout='vertical'>
         <Form.Item name='label' label='Name of the Event'>
          <Input
           value={label}
-          id="label1"
           onChange={(e) => setLabel(e.target.value)}
-          // name='label'
+          name='label'
           placeholder='friendly match'
           type='text'
          />
         </Form.Item>
         <Form.Item name='datePicker'>
-         <Input
+         <input
           type='date'
-          id='StartDate'
+          name='Start Date'
           value={start_date}
           onChange={(e) => setStart_date(e.target.value)}
           required='true'
          />
-         <Input
+         <input
           type='date'
-          id='FinalDate'
+          name='Final Date'
           value={final_date}
           onChange={(e) => setFinal_date(e.target.value)}
           required='true'
@@ -248,10 +240,9 @@ export default function Coachevent() {
           <Select
            placeholder='Select location'
            style={{ width: "50%" }}
-           id="selectLocation"
-          //  onClick={() => {
-          //   onAssignEvents(item)
-          //  }}
+           onClick={() => {
+            onAssignEvents(item)
+           }}
            onChange={(key) =>
             handleChangeSelect(location.find((c) => c.name == key).id)
            }
@@ -265,18 +256,16 @@ export default function Coachevent() {
            })}
           </Select>
          </Form.Item>
-         <Form.Item name='State' label='State'>
-          <Select
-          placeholder='Select State Event'        
-           style={{ width: "50%" }}
-           id='selectState'
+         <Form.Item label='State'>
+          <select
+           name='State'
            value={state}
-           onChange={(value) => {setState(value)}}
+           onChange={(e) => setState(e.target.value)}
           >
-           <Select.Option value=''>Choose</Select.Option>
-           <Select.Option value='Public'>Public</Select.Option>
-           <Select.Option value='Private'>Private</Select.Option>
-          </Select>
+           <option value=''>Choose</option>
+           <option value='public'>Public</option>
+           <option value='private'>Private </option>
+          </select>
          </Form.Item>
          <Form.Item name='details' label='Details'>
           <Input
@@ -289,7 +278,7 @@ export default function Coachevent() {
         </Form.Item>
        </Form>
       </Modal>
-     )}
+     ))}
    </div>
   </Dashboard>
  )

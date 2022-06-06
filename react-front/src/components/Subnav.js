@@ -61,6 +61,9 @@ export function Subnav(props) {
       <Menu.Item key='8' onClick={() => navigate("/player/challenges")}>
        Mes défis
       </Menu.Item>
+      <Menu.Item key='7' onClick={() => navigate("/player/events")}>
+       Mes events
+      </Menu.Item>
 
      </>
     )}

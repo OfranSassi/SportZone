@@ -46,7 +46,7 @@ export default function Challengedetails() {
 
   fetchData(location.state)
  }, [etatRecord])
- //table of content 
+ //table of content
  const columns = [
   { title: "Player's Name", dataIndex: "firstname_player", key: `_id` },
   {

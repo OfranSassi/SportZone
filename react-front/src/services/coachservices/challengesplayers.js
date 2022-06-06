@@ -49,7 +49,7 @@ export const assign = async (playerId,video_link,objective,start_date,final_date
      },
     }
    ).then((res) => {
-    //message.success("Challenge Saved!")
+    message.success("Challenge Saved!")
     console.log("------", res)
    })
   } catch (e) {
