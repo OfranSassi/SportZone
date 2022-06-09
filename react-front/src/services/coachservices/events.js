@@ -16,16 +16,6 @@ export const createEvents = async (
   //    API_URL + `/create`,
   API_URL + `/assign`,
   {
-   //here continue....
-   //comment
-   //    player: playerId,
-   //    coach: "",
-   //    label: label,
-   //    location: locationId,
-   //    state: state,
-   //    details: details,
-   //    start_date: start_date,
-   //    final_date: final_date,
    playerId,
    label,
    locationId,
@@ -40,11 +30,6 @@ export const createEvents = async (
    },
   }
  )
- //   .then((res) => {
- //    message.success("Event Saved!")
- //    console.log("------", res)
- //   })
- //  //name of the modal bellow
  return res.data.events
 }
 

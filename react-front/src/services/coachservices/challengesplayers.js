@@ -2,7 +2,6 @@ import { message } from "antd"
 import axios from "axios"
 const API_URL = "http://localhost:5001/coach/challenge"
 const API_URL2 = "http://localhost:5001/coach/players/all"
-// const API_URL3 = "http://localhost:5001/coach/challenge/update/:id"
 
 export const assignChallenge = async (
  player,

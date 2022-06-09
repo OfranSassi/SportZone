@@ -1,4 +1,4 @@
-import { Button, Table, Modal, Form, Input, Select } from "antd"
+import { Button, Table, Modal, Form, Input, Select,message } from "antd"
 import Dashboard from "../Dashboard"
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -6,6 +6,7 @@ import {
  getEvents,
  getPlayers,
  createEvents,
+ assign
 } from "../../../services/coachservices/events"
 import {
  getLocationsByCoach,
@@ -162,21 +163,21 @@ export default function Coachevent() {
  const onFinish = () => {
 setIsAssigned(false)
  }
- const assign = async (event) => {
-  try {
-   await createEvents(
-    playerId,
-    label,
-    start_date || moment(new Date()).format("YYYY-MM-DD"),
-    final_date || moment(new Date()).format("YYYY-MM-DD"),
-    locationId,
-    state,
-    details
-   )
-  } catch (e) {
-   console.log("error")
-  }
- }
+//  const assign = async (event) => {
+//   try {
+//    await createEvents(
+//     playerId,
+//     label,
+//     start_date || moment(new Date()).format("YYYY-MM-DD"),
+//     final_date || moment(new Date()).format("YYYY-MM-DD"),
+//     locationId,
+//     state,
+//     details
+//    )
+//   } catch (e) {
+//    console.log("error")
+//   }
+//  }
 
  return (
   <Dashboard>
@@ -215,10 +216,17 @@ setIsAssigned(false)
        onCancel={() => {
         resetAssign()
        }}
-       onOk={assign}
-       onFinish={onFinish}
+       onOk={()=>{assign (
+        playerId,
+        label,
+        locationId,
+        state,
+        details,
+        start_date,
+        final_date
+         );message.success("Event Saved!");onFinish()}}     
       >
-       <Form layout='vertical' onFinish={onFinish}>
+       <Form layout='vertical' >
         <Form.Item name='label' label='Name of the Event'>
          <Input
           value={label}

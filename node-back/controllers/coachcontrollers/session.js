@@ -35,16 +35,28 @@ exports.createSession = async(req,res)=>{
 // _id: req.params.id
 
 //affichers session
-exports.showSession = async (req, res) => {
-  // Session.find({ coach: req.userId })
-  // .populate({ path: 'training_location' }).exec((err, session) => {
-  //   res.json({ session: session });
-  //  })
-  Session.find({ coach: req.userId }).populate("coach" ).exec((err, session)=> {
-    res.json({ session: session });
-  });
+// exports.showSession = async (req, res) => {
+//   Session.find({ coach: req.userId })
+//   .populate({ path: 'training_location' }).exec((err, session) => {
+//     res.json({ session: session });
+//    })
+//   Session.find({ coach: req.userId }).populate("coach" ).exec((err, session)=> {
+//     res.json({ session: session });
+//   });
   
+// };
+
+exports.showSession = async (req, res) => {
+  Session.find({ coach: req.userId, player: req.params.id, location: req.params.id})
+    .populate("player")
+    .populate("coach")
+    .populate("location")
+    .exec((err, session) => {
+      res.json({ session: session });
+    });
 };
+
+
 
 
 //supprimer session
