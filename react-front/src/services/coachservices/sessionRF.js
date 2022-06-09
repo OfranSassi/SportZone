@@ -16,13 +16,19 @@ export const createSession = async (
    API_URL + `/create`,
    {
     //here continue....
-    title: title,
-    player: playerId,
-    coach: "",
-    date: date,
-    location: locationId,
-    objective: objective,
-    target: target,
+    // title: title,
+    // player: playerId,
+    // coach: "",
+    // date: date,
+    // location: locationId,
+    // objective: objective,
+    // target: target,
+    title,
+    playerId,
+    date,
+    locationId,
+    objective,
+    target,
    },
    {
     headers: {
@@ -30,23 +36,22 @@ export const createSession = async (
     },
    }
   )
-  .then((res) => {
-   message.success("Session Saved!")
-   console.log("------", res)
-  })
+  // .then((res) => {
+  //  message.success("Session Saved!")
+  //  console.log("------", res)
+  // })
  //name of the modal bellow
  return res.data.session
 }
 //players
 export const getPlayers = async () => {
-   const result = await axios.get(API_URL2, {
-    headers: {
-     Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-   })
-   return result.data.players
-  }
-
+ const result = await axios.get(API_URL2, {
+  headers: {
+   Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+ })
+ return result.data.players
+}
 
 export const assign = async (
  title,
@@ -63,7 +68,6 @@ export const assign = async (
     {
      title: title,
      player: playerId,
-     coach: "",
      date: date,
      location: locationId,
      objective: objective,
@@ -84,7 +88,6 @@ export const assign = async (
   console.log("error")
  }
 }
-
 
 //update session
 export const updateSession = async (id, session) => {
@@ -150,6 +153,18 @@ export const rejectSession = async (id, reason, other) => {
 
  return res.data.session
 }
+export const getSessionsByPlayer = async (id) => {
+  const result = await axios.get(API_URL + `/player/${id}`, {
+   headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+   },
+  })
+  console.log(" result.data.session   :", result.data.session)
+  return result.data.session
+ }
+ 
+
+
 
 export const getSessions = async () => {
  const result = await axios.get(API_URL + `/all`, {

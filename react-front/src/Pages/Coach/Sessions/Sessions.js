@@ -8,6 +8,7 @@ import {
  DatePicker,
  message,
 } from "antd"
+
 import Dashboard from "../Dashboard"
 import React, { useEffect, useState } from "react"
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
@@ -15,7 +16,6 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
 import { useNavigate } from "react-router-dom"
 import {
  getPlayers,
- assign,
  createSession,
  getSessions,
  updateSession,
@@ -29,20 +29,21 @@ import {
 import moment from "moment"
 const { Option } = Select
 
+
 export default function Sessions() {
  const [isAssigned, setIsAssigned] = useState(false)
  const [page, setPage] = useState(1)
  const [pageSize, setPageSize] = useState(10)
  const [loading, setLoading] = useState(false)
  const [error, setError] = useState(false)
- const [players, setPlayers] = useState([])
  const [session, setSession] = useState([])
+ const [players, setPlayers] = useState([])
  const [title, setTitle] = useState("")
  const [objective, setObjective] = useState("")
- const [date, setDate] = useState("")
+ const [date, setDate] = useState([""])
  const [target, setTarget] = useState("")
  const [prefix1, setPrefix1] = useState("")
- const [prefix2, setPrefix2] = useState()
+ const [prefix2, setPrefix2] = useState("")
 
  const [program, setProgram] = useState("")
  const [playerId, setPlayerId] = useState([])
@@ -67,27 +68,36 @@ export default function Sessions() {
       id: row._id,
      }))
     )
+    console.log("1")
     //this is session
     setLoading(false)
     const sess = await getSessions()
     console.log("Session : ", sess)
     setSession(
      sess.map((row) => ({
-      title: row.title,
-      date: row.date,
-      target: row.target,
-      location: row.location["name"],
-      program: row.program,
-      objective: row.objective,
-      id: row._id,
+      firstname_player:
+      row.player == undefined ? "" : row.player["firstname"],
+       title: row.title,
+       date : row.date,
+       location: row.location == undefined ? "" : row.location["name"],
+       objective: row.objective,
+       target:row.target,
+       id: row._id,
+    //   title: row.title== undefined ? "" :row.title,
+    //   date: row.date== undefined ? "" :row.date,
+    //   target: row.target== undefined ? "" :row.target,
+    //   location: row.location["name"]== undefined ? "" : row.location["name"],
+    //  // program: row.program,
+    //   objective: row.objective == undefined ? "" : row.objective,
+    //  // id: row._id,
      }))
     )
-
+    console.log("2")
     //callilng for LOCATION fields
     setLoading(false)
-    const location = await getLocations()
+    const loc = await getLocations()
     setLocation(
-     location.map((row) => ({
+     loc.map((row) => ({
       name: row.name,
       city: row.city,
       country: row.country,
@@ -95,6 +105,7 @@ export default function Sessions() {
       id: row._id,
      }))
     )
+    console.log("3")
    } catch (e) {
     // console.log("e : ", e)
     setLoading(false)
@@ -103,14 +114,14 @@ export default function Sessions() {
   }
 
   fetchData()
- }, [])
+ }, [etatRecord])
 
  //table of content
  const columns = [
-  { title: "Title", dataIndex: "title" },
-  { title: "Player", dataIndex: "firstname_player", key: `_id` },
+  { title: "Title", dataIndex: "title"  },
+  { title: "Player", dataIndex: "firstname", key: `_id`  },
   { title: "Date", dataIndex: "date" },
-  { title: "Location", dataIndex: "name", key: `_id` },
+  {title: "Location", dataIndex: "name" ,key: `_id` },
   { title: "Objective", dataIndex: "objective" },
   { title: "Target", dataIndex: "target" },
 
@@ -119,12 +130,12 @@ export default function Sessions() {
    render: (record) => {
     return (
      <>
-      <EditOutlined
+      {/* <EditOutlined
        className='mx-2'
        onClick={(e) => {
         onAssignSession(record)
        }}
-      />
+      /> */}
       <DeleteOutlined
        className='mx-2'
        onClick={() => {
@@ -160,24 +171,20 @@ export default function Sessions() {
   setIsAssigned(false)
   setSession(null)
  }
- //  const handleChangeDate = (e) => {
- //   setSession({
- //    ...setSession,
- //    start_date: e[0].format(),
- //    final_date: e[1].format(),
- //   })
- //  }
 
- //  const handleChange = (e) => {
- //   // ({ value });
- //   setPrefix1(e)
- //  }
-
+  // const handleChange = (e) => {
+  //  // ({ value });
+  //  setPrefix1(e)
+  // }
+  const handleChangeSelect2 = (e) => {
+    setPlayerId(e)
+   }
  const handleChangeSelect = (e) => {
   setLocationId(e)
  }
- const onFinish = (values) => {
-  console.log(values)
+
+ const onFinish = () => {
+  setIsAssigned(false)
  }
  //  const assign = async (session) => {
  //   try {
@@ -241,6 +248,24 @@ export default function Sessions() {
    </Select>
   </Form.Item>
  )
+ const assign = async (sess) => {
+  try {
+   await createSession(    
+    title,
+    playerId,
+    // date,
+    date || moment(new Date()).format("YYYY-MM-DD HH:mm:ss'"),
+    locationId,
+    objective,
+    target
+   )
+  } catch (e) {
+   console.log("error")
+  }
+ }
+
+
+
  return (
   <Dashboard>
    <div>
@@ -250,9 +275,15 @@ export default function Sessions() {
     </center>
     {loading && <div>Loading ... </div>}
     {error && <div>Error....</div>}
+    
     <Button
+      // id={record.id.slice(4)}
      type='primary'
-     onClick={() => {
+     id="makeSession"
+     onClick={(record) => {
+      setPlayerId(record.id), 
+      onAssignSession(record),
+      setEtatRecord(true)
       setIsAssigned(true)
      }}
      style={{ marginLeft: 12 }}
@@ -262,10 +293,11 @@ export default function Sessions() {
 
     {!loading && (
      <Table
-      rowKey={Math.random()}
+      
       onChange={onChange}
       columns={columns}
       dataSource={session}
+      rowKey={Math.random()}
       pagination={{
        current: page,
        pageSize: pageSize,
@@ -287,19 +319,20 @@ export default function Sessions() {
       onCancel={() => {
        resetAssign()
       }}
-      onOk={() => {
-       assign(title, playerId, date, locationId, objective, target)
-       message.success("Event Saved!")
-      }}
-      //  onOk={assign}
+      // onOk={() => {
+      //  assign(title, playerId, date, locationId, objective, target)
+      //  message.success("Event Saved!")
+      // }}
+       onOk={assign}
      >
-      <Form layout='vertical' onFinish={onFinish}>
+      <Form layout='vertical' >
        <Form.Item name='title' label='Name of the Title'>
         <Input
          value={title}
+         id="title"
          onChange={(e) => setTitle(e.target.value)}
          name='title'
-         placeholder='friendly match'
+         placeholder='Workout Session'
          type='text'
         />
        </Form.Item>
@@ -308,11 +341,15 @@ export default function Sessions() {
         <Select
          placeholder='Select Player'
          style={{ width: "50%" }}
+         id="player"
          //  onClick={() => {
          //   onAssignSession(item)
          //  }}
-         onChange={(key) =>
-          setLocationId(players.find((c) => c.firstname == key).id)
+        //  onChange={(key) =>
+        //   setLocationId(players.find((c) => c.firstname == key).id)
+        //  }
+        onChange={(key) =>
+          handleChangeSelect2(players.find((c) => c.firstname == key).id)
          }
         >
          {players.map((item) => {
@@ -324,22 +361,38 @@ export default function Sessions() {
          })}
         </Select>
        </Form.Item>
-       <Form.Item title='DatePicker' {...config} label='Session Date'>
-        <DatePicker
+       <Form.Item name='DatePicker' {...config} label='Session Date'>
+       <DatePicker 
+  
+       id="DatePicker"
+       showTime={{ format: 'HH:mm' }}
+       format="YYYY-MM-DD HH:mm"    
+       value={date}    
+       onChange={(e) => setDate(e)}
+       name='DatePicker'
+       required='true'
+
+      //  onChange={onChange} onOk={onOk}
+        />
+    
+        {/* <DatePicker
+        id='date'
          showTime
          format='YYYY-MM-DD HH:mm:ss'
          style={{
           width: "100%",
          }}
          value={date}
-         onOk={(e) => setDate(e)}
+         onChange={(e) => setDate(e.target.value)}
+        //  onOk={(e) => setDate(e)}
          required='true'
-        />
+        /> */}
        </Form.Item>
        <Form.Item label='Location'>
         <Select
          placeholder='Select location'
          style={{ width: "50%" }}
+         id="selectLocation"
          //  onClick={() => {
          //   onAssignSession(item)
          //  }}
@@ -360,6 +413,7 @@ export default function Sessions() {
        <Form.Item name='objective' label='Objective'>
         <Input
          value={objective}
+         id="objective"
          onChange={(e) => setObjective(e.target.value)}
          name='details'
          type='text'
@@ -375,6 +429,7 @@ export default function Sessions() {
          style={{
           width: "100%",
          }}
+         type='text'
         />
        </Form.Item>
 
@@ -391,6 +446,7 @@ export default function Sessions() {
          style={{
           width: "100%",
          }}
+         type='text'
         />
        </Form.Item>
        <Form.Item

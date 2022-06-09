@@ -18,6 +18,10 @@ export default function Challengedetails() {
  const [error, setError] = useState(false)
  const [players, setPlayers] = useState([])
  const [etatRecord, setEtatRecord] = useState(false)
+//  const [video_link, setLink] = useState({})
+//  const [objective, setObjective] = useState({})
+//  const [start_date, setDate1] = useState({})
+//  const [final_date, setDate2] = useState({})
  const location = useLocation()
  useEffect(() => {
   const fetchData = async (idplayer) => {
@@ -45,6 +49,7 @@ export default function Challengedetails() {
   }
 
   fetchData(location.state)
+
  }, [etatRecord])
  //table of content
  const columns = [
@@ -64,12 +69,14 @@ export default function Challengedetails() {
     return (
      <>
       <EditOutlined
+      id="editIcon"
        className='mx-2'
        onClick={(e) => {
         onAssignChallenge(record)
        }}
       />
       <DeleteOutlined
+      id="deleteIcon"
        className='mx-2'
        onClick={() => {
         onDeleteChall(record)
@@ -102,15 +109,16 @@ export default function Challengedetails() {
  const edit = async (player) => {
   try {
    await updateChallenge(player.id, player)
+   setEtatRecord(true)
   } catch (e) {
    message.error("Something went wrong!")
    console.log("error")
   }
  }
 
- const onFinish = (values) => {
-  console.log(values)
- }
+ const onFinish = () => {
+setIsAssigned(false)
+}
  const onDeleteChall = (record) => {
   Modal.confirm({
    title: "Are you sure, you want to delete this challenge record?",
@@ -122,6 +130,8 @@ export default function Challengedetails() {
    },
   })
  }
+
+  
 
  return (
   <Dashboard>
@@ -152,6 +162,7 @@ export default function Challengedetails() {
 
     {isAssigned && (
      <Modal
+     id="saveButton"
       title='Edit Challenge'
       visible={isAssigned}
       okText='Save'
@@ -159,16 +170,19 @@ export default function Challengedetails() {
        resetAssign()
       }}
       onOk={() => {
-       edit(challengeplayer.player)
+       edit(challengeplayer.player);
+       message.success("Challenge Edited!");
+       onFinish()
       }}
      >
       <Form
        initialValues={challengeplayer.player}
        layout='vertical'
-       onFinish={onFinish}
+   
       >
        <Form.Item name='video_link' label='Link Video'>
         <Input
+        id="linkVideo"
          className='input'
          value={challengeplayer.video_link}
          onChange={(e) => {
@@ -179,6 +193,7 @@ export default function Challengedetails() {
        </Form.Item>
        <Form.Item name='objective' label='Objective'>
         <Input
+        id="objective"
          className='input'
          value={challengeplayer.objective}
          onChange={(e) => {
@@ -189,6 +204,8 @@ export default function Challengedetails() {
        </Form.Item>
        <Form.Item name='start_date' label='Start Date'>
         <Input
+        id="startDate"
+         type='date'
          className='input'
          value={challengeplayer.start_date}
          onChange={(e) => {
@@ -199,6 +216,8 @@ export default function Challengedetails() {
        </Form.Item>
        <Form.Item name='final_date' label='Final Date'>
         <Input
+        id="finalDate"
+        type='date'
          className='input'
          value={challengeplayer.final_date}
          onChange={(e) => {

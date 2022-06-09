@@ -11,7 +11,7 @@ let sessionSchema = new Schema(
     // },
 
     date: {
-      type: Date,
+      type: String,
     },
     // isRejected: {
     //   type: Boolean,

@@ -6,7 +6,8 @@ import {
  getEvents,
  getPlayers,
  createEvents,
- playerParticipating
+ playerParticipating,
+ getEventsByPlayer,
 } from "../../../services/coachservices/events"
 import {
  getLocations,
@@ -31,10 +32,10 @@ export default function Coachevent() {
  const [location, setLocation] = useState([])
  const navigate = useNavigate()
  useEffect(() => {
-  const fetchData = async () => {
+  const fetchData = async (idplayer) => {
    setLoading(true)
    try {
-    const plyrs = await getPlayers()
+    const plyrs = await getEventsByPlayer(idplayer)
     setPlayers(
      plyrs.map((row) => ({
       firstname_coach: row.coach["firstname"],

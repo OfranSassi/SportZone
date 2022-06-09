@@ -155,6 +155,7 @@ export default function Players() {
     </Button>
 
     <Button
+    id="buttonChallenge"
      className='btn'
      style={{
       paddingBottom: 50,

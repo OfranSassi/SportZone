@@ -40,7 +40,7 @@ exports.showSession = async (req, res) => {
   // .populate({ path: 'training_location' }).exec((err, session) => {
   //   res.json({ session: session });
   //  })
-  Session.find({ coach: req.userId }, function (err, session) {
+  Session.find({ coach: req.userId }).populate("coach" ).exec((err, session)=> {
     res.json({ session: session });
   });
   

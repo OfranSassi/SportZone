@@ -159,8 +159,8 @@ export default function Coachevent() {
  const handleChangeSelect = (e) => {
   setLocationId(e)
  }
- const onFinish = (values) => {
-  console.log(values)
+ const onFinish = () => {
+setIsAssigned(false)
  }
  const assign = async (event) => {
   try {
@@ -216,7 +216,7 @@ export default function Coachevent() {
         resetAssign()
        }}
        onOk={assign}
-       
+       onFinish={onFinish}
       >
        <Form layout='vertical' onFinish={onFinish}>
         <Form.Item name='label' label='Name of the Event'>

@@ -87,6 +87,7 @@ export default function Challengeform() {
     return (
      <>
       <Button
+      id="resrveChallenge"
        type='primary'
        onClick={(e) => {
         setPlayerId(record.id), onAssignChallenge(record)
@@ -96,6 +97,7 @@ export default function Challengeform() {
        Reserve a challenge 
       </Button>
       <Button
+      id="detailsButton"
        onClick={() => {
         navigate("/coach-challenge-details/", { state: record.id })
        }}
@@ -125,6 +127,9 @@ export default function Challengeform() {
   setIsAssigned(false)
   setChallengeplayer(null)
  }
+ const onFinish = () => {
+  setIsAssigned(false)
+  }
 
  return (
   <Dashboard>
@@ -155,17 +160,19 @@ export default function Challengeform() {
 
     {isAssigned && (
      <Modal
+     id="saveButton"
       title='Please choose dates and time of challenge reservation'
       visible={isAssigned}
       okText='Reserve'
       onCancel={() => {
        resetAssign()
       }}
-      onOk={()=>{assign (playerId,video_link,objective,start_date,final_date);message.success("Challenge Saved!")}}
+      onOk={()=>{assign (playerId,video_link,objective,start_date,final_date);message.success("Challenge Saved!");onFinish()}}
      >
       <Form layout='vertical'>
        <Form.Item name='link_video' label='Link Video' title='video_link'>
         <Input
+        id="linkVideo"
          value={video_link}
          onChange={(e) => setVideo_link(e.target.value)}
          name='video_link'
@@ -175,6 +182,7 @@ export default function Challengeform() {
        </Form.Item>
        <Form.Item name='objective' label='Objective'>
         <Input
+        id="objective"
          value={objective}
          onChange={(e) => setObjective(e.target.value)}
          name='objective'
@@ -183,13 +191,15 @@ export default function Challengeform() {
         />
        </Form.Item>
        <Form.Item name='datePicker'>
-        <input
+        <Input
+        id="startDate"
          type='date'
          name='Start Date'
          value={start_date}
          onChange={(e) => setStart_date(e.target.value)}
         />
-        <input
+        <Input
+        id="finalDate"
          type='date'
          name='Final Date'
          value={final_date}

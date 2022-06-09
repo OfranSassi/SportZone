@@ -6,39 +6,86 @@ const API_URL2 = "http://localhost:5001/coach/players/all"
 export const createEvents = async (
  playerId,
  label,
- start_date,
- final_date,
  locationId,
  state,
- details
+ details,
+ start_date,
+ final_date
 ) => {
- const res = await axios
-  .post(
-   API_URL + `/create`,
-   {
-    //here continue....
-    player: playerId,
-    coach: "",
-    label: label,
-    start_date: start_date,
-    final_date: final_date,
-    location: locationId,
-    state: state,
-    details: details,
+ const res = await axios.post(
+  //    API_URL + `/create`,
+  API_URL + `/assign`,
+  {
+   //here continue....
+   //comment
+   //    player: playerId,
+   //    coach: "",
+   //    label: label,
+   //    location: locationId,
+   //    state: state,
+   //    details: details,
+   //    start_date: start_date,
+   //    final_date: final_date,
+   playerId,
+   label,
+   locationId,
+   state,
+   details,
+   start_date,
+   final_date,
+  },
+  {
+   headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
    },
-   {
-    headers: {
-     Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-   }
-  )
-  .then((res) => {
-   message.success("Event Saved!")
-   console.log("------", res)
-  })
- //name of the modal bellow
+  }
+ )
+ //   .then((res) => {
+ //    message.success("Event Saved!")
+ //    console.log("------", res)
+ //   })
+ //  //name of the modal bellow
  return res.data.events
 }
+
+export const assign = async (
+ playerId,
+ label,
+ locationId,
+ state,
+ details,
+ start_date,
+ final_date
+) => {
+ try {
+  await axios
+   .post(
+    API_URL + `/create`,
+    {
+     player: playerId,
+     label: label,
+     location: locationId,
+     state: state,
+     details: details,
+     start_date: start_date,
+     final_date: final_date,
+    },
+    {
+     headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+     },
+    }
+   )
+   .then((res) => {
+    message.success("Event Saved!")
+    console.log("------", res)
+   })
+ } catch (e) {
+  message.error("Something went wrong!")
+  console.log("error")
+ }
+}
+
 //players
 export const getPlayers = async () => {
  const result = await axios.get(API_URL2, {
@@ -69,6 +116,7 @@ export const getEventsByPlayer = async (id) => {
 }
 
 export const updateEvent = async (id, event) => {
+ console.log("plauer location :", event)
  const res = await axios.put(
   API_URL + `/update/${id}`,
   {

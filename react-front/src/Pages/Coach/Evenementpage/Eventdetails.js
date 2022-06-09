@@ -1,4 +1,4 @@
-import { Table, Modal, Form, Input, Select , message} from "antd"
+import { Table, Modal, Form, Input, Select , message, DatePicker} from "antd"
 import Dashboard from "../Dashboard"
 import Axios from "axios"
 import React, { useEffect, useState } from "react"
@@ -14,7 +14,7 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
 export default function Eventform() {
  const [eventplayer, setEventplayer] = useState({})
  const [states, setStates] = useState({})
- const [date1, setDate1] = useState({})
+ const [date1, setDate1] = useState()
  const [date2, setDate2] = useState({})
  const [location, setLocation] = useState([])
  const [isAssigned, setIsAssigned] = useState(false)
@@ -98,10 +98,14 @@ export default function Eventform() {
     return (
      <>
       <EditOutlined
+       id="editButton"
        className='mx-2'
        onClick={(e) => {
+         console.log("record", record);
         onAssignEvent(record)
-       }}
+        
+       }}      
+       
       />
       <DeleteOutlined
        className='mx-2'
@@ -129,18 +133,33 @@ export default function Eventform() {
 
  const edit = async (player) => {
   try {
-   player.location = locationId
-   player.state = states
-   player.start_date = date1
+  //  player.location = locationId
+  //  player.state = states
+  //  player.start_date = date1
+  //  player.final_date = date2
+  console.log("location  :" , player)
+  const idlocation = location.find((c) => c.name == player.location)?.id
+  if(idlocation != undefined)  { console.log( "id : " , idlocation) ;player.location =idlocation}
    await updateEvent(player.id, player)
+   setEtatRecord(true)
   } catch (e) {
    message.error("Something went wrong!")
    console.log("error")
   }
  }
 
- const onFinish = (values) => {
-  console.log(values)
+ //date 
+ function onChangeDate(value, dateString) {
+    console.log("Selected Time: ", value);
+    console.log("Formatted Selected Time: ", dateString);
+  }
+  function onOk(value) {
+    console.log("onOk: ", value);
+  }
+  
+//finish date
+ const onFinish = () => {
+ setIsAssigned(false)
  }
 
  const onDeleteEv = (record) => {
@@ -154,6 +173,7 @@ export default function Eventform() {
    },
   })
  }
+//  console.log("start date", date1.slice(0,10));
 
  return (
   <Dashboard>
@@ -192,14 +212,15 @@ export default function Eventform() {
       }}
       onOk={() => {
        edit(eventplayer.player)
-       setEtatRecord(true)
+       message.success("Event Edited!")
+       onFinish()
+       setEtatRecord(true);onFinish()
       }}
      >
       <Form
        initialValues={eventplayer.player}
        layout='vertical'
-       onFinish={onFinish}
-      >
+           >
        <Form.Item name='label' label='Label'>
         <Input
          className='input'
@@ -214,13 +235,16 @@ export default function Eventform() {
         <Select
          placeholder='Select location'
          style={{ width: "50%" }}
-         onChange={(key) =>
-          handleChangeSelect(location.find((c) => c.name == key).id)
-         }
+         onChange={(key) =>{
+         //handleChangeSelect()
+         eventplayer.player.location = location.find((c) => c.name == key).id
+          }}
+          onLoadStart ={(key)=>{ }}
+          defaultValue={eventplayer.player["location"]}
         >
          {location.map((item) => {
           return (
-           <Select.Option key={item._id} value={item.name}>
+           <Select.Option key={item._id} value={item.name}  >
             {item.name}
            </Select.Option>
           )
@@ -228,17 +252,24 @@ export default function Eventform() {
         </Select>
        </Form.Item>
        <Form.Item name='state' label='State'>
-        <select
+        <Select
+        className="select"
          name='State'
-         value={state}
-         onChange={(e) => {
-          setStates(e.target.value)
+        //  value={state}
+        defaultValue={eventplayer.player["state"]}
+         onChange={(value) => {
+           console.log("state : " ,value)
+          eventplayer.player.state = value
+          setEventplayer(eventplayer)
          }}
+        //  onChange={(e) => {
+        //   setStates(e.target.value)
+        //  }}
         >
-         <option value=''>Choose</option>
-         <option value='public'>Public</option>
-         <option value='private'>Private </option>
-        </select>
+         <Option value=''>Choose</Option>
+         <Option value='public'>Public</Option>
+         <Option value='private'>Private </Option>
+        </Select>
        </Form.Item>
        <Form.Item name='details' label='Details'>
         <Input
@@ -250,24 +281,39 @@ export default function Eventform() {
          }}
         />
        </Form.Item>
-       <Form.Item name='datePicker'>
-        <input
+       <Form.Item  label =" Start Date" name='datePicker1' >
+        <Input
          type='date'
          name='Start Date'
-         value={eventplayer.start_date}
-         onChange={(e) => {
-          setDate1(e.target.value)
+         className='input'
+         defaultValue={eventplayer.player["start_date"]}
+        //comment
+        //  format={'YYYY-MM-DD'}
+         //comment
+        //  onChange={(e) => {
+        //     setDate1(e.target.value)
+        //    }}
+        onChange={(e) => {
+          eventplayer.player.start_date = e.target.value
+          setEventplayer(eventplayer)
          }}
-         required
+        
         />
-        <input
+          </Form.Item>
+          <Form.Item  label =" Final Date" name='datePicker2' >
+        <Input
+         className='input'
          type='date'
          name='Final Date'
-         value={eventplayer.final_date}
+         defaultValue={eventplayer.player["final_date"]}
          onChange={(e) => {
-          setDate2(e.target.value)
+          eventplayer.player.final_date = e.target.value
+          setEventplayer(eventplayer)
          }}
-         required
+        //  onChange={(e) => {
+        //   setDate2(e.target.value)
+        //  }}
+      
         />
        </Form.Item>
       </Form>
