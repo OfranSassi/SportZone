@@ -193,12 +193,12 @@ router.get(
   coachControllerSession.showSession
 );
 //afficher tt les seances
-router.get(
-  "/session/all",
-  jsonParser,
-  [authJwt.verifyToken, authJwt.isCoach],
-  coachControllerSession.showAllSession
-);
+// router.get(
+//   "/session/all",
+//   jsonParser,
+//   [authJwt.verifyToken, authJwt.isCoach],
+//   coachControllerSession.showAllSession
+// );
 router.get(
   "/session/reasons",
   jsonParser,

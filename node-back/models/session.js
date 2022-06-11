@@ -30,7 +30,7 @@ let sessionSchema = new Schema(
     // },
 
     // target_measure: {type: mongoose.Schema.Types.ObjectId, ref: "typeStatistic"},
-    location: { type: mongoose.Schema.Types.ObjectId, ref: "training_location" },
+    location: { type: mongoose.Schema.Types.ObjectId, ref: "location" },
     // objectifs: [{ type: String }],
     // reason: { type: mongoose.Schema.Types.ObjectId, ref: "reason" },
     program: { type: mongoose.Schema.Types.ObjectId, ref: "program" },

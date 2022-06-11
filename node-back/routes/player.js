@@ -8,7 +8,7 @@ var jsonParser = bodyParser.json();
 const playerControllerPofil = require("../controllers/playercontrollers/profile");
 const playerControllerChallenge = require("../controllers/playercontrollers/challenge");
 const playerControllerEvents = require("../controllers/playercontrollers/events");
-
+const coachControllerEvents =  require("../controllers/coachcontrollers/events")
 router.get(
   "/profile",
   jsonParser,
@@ -48,14 +48,14 @@ router.get(
   "/events/all",
   jsonParser,
   [authJwt.verifyToken, authJwt.isPlayer],
-  playerControllerEvents.allEventsByUser
+  coachControllerEvents.GetEventsPlayer
 );
 // choisir participating ou pas à un de mes events
-router.put(
+router.post(
   "/events/participating/:id",
   jsonParser,
   [authJwt.verifyToken, authJwt.isPlayer],
-  playerControllerEvents.participatingEvents
+  coachControllerEvents.participatingEvents
 );
 
 

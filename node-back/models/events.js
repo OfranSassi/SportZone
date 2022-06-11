@@ -27,7 +27,16 @@ let eventsSchema = new Schema(
         type:String,
         required:true 
     },
+    participating: {
+      type: String,
+      enum : ['PENDING','REFUSED','ACCEPTED'],
+      default: 'PENDING'
+      },
 
+    //   see_coach: { 
+    //     type:Boolean,
+    //     default: false
+    // },
     
     coach:{type: mongoose.Schema.Types.ObjectId, ref: "user" },
     location:{type: mongoose.Schema.Types.ObjectId, ref: "location" },

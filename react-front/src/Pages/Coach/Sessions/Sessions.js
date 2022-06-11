@@ -15,22 +15,19 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
 
 import { useNavigate } from "react-router-dom"
 import {
- getPlayers,
- createSession,
  getSessions,
- updateSession,
+ getSessionsByPlayer,
+ getPlayers,
+ getProgram,
  deleteSession,
+ assign,
 } from "../../../services/coachservices/sessionRF"
-import {
- getLocationsByCoach,
- getLocations,
- getLocationById,
-} from "../../../services/coachservices/locations"
+import { getLocations } from "../../../services/coachservices/locations"
 import moment from "moment"
 const { Option } = Select
 
-
 export default function Sessions() {
+ const [sessionplayer, setSessionplayer] = useState({})
  const [isAssigned, setIsAssigned] = useState(false)
  const [page, setPage] = useState(1)
  const [pageSize, setPageSize] = useState(10)
@@ -38,14 +35,15 @@ export default function Sessions() {
  const [error, setError] = useState(false)
  const [session, setSession] = useState([])
  const [players, setPlayers] = useState([])
+
  const [title, setTitle] = useState("")
  const [objective, setObjective] = useState("")
  const [date, setDate] = useState([""])
  const [target, setTarget] = useState("")
  const [prefix1, setPrefix1] = useState("")
  const [prefix2, setPrefix2] = useState("")
-
- const [program, setProgram] = useState("")
+ const [programId, setProgramId] = useState([])
+ const [program, setProgram] = useState()
  const [playerId, setPlayerId] = useState([])
  const [locationId, setLocationId] = useState([])
  const [location, setLocation] = useState([])
@@ -55,7 +53,7 @@ export default function Sessions() {
  const navigate = useNavigate()
 
  useEffect(() => {
-  const fetchData = async () => {
+  const fetchData = async (idplayer) => {
    setLoading(true)
    try {
     const plyrs = await getPlayers()
@@ -68,33 +66,35 @@ export default function Sessions() {
       id: row._id,
      }))
     )
-    console.log("1")
-    //this is session
-    setLoading(false)
-    const sess = await getSessions()
-    console.log("Session : ", sess)
-    setSession(
-     sess.map((row) => ({
-      firstname_player:
-      row.player == undefined ? "" : row.player["firstname"],
-       title: row.title,
-       date : row.date,
-       location: row.location == undefined ? "" : row.location["name"],
-       objective: row.objective,
-       target:row.target,
-       id: row._id,
-    //   title: row.title== undefined ? "" :row.title,
-    //   date: row.date== undefined ? "" :row.date,
-    //   target: row.target== undefined ? "" :row.target,
-    //   location: row.location["name"]== undefined ? "" : row.location["name"],
-    //  // program: row.program,
-    //   objective: row.objective == undefined ? "" : row.objective,
-    //  // id: row._id,
+
+    const prog = await getProgram()
+    setProgram(
+        prog.map((row) => ({
+            program: row.title,
+      id: row._id,
      }))
     )
-    console.log("2")
+    const sess = await getSessions()
+    setSession(
+        sess.map((row) => ({
+      firstname_player:
+      row.player == undefined ? "" : row.player["firstname"],
+      location: row.location == undefined ? "" : row.location["name"],
+      title : row.title,
+      date : row.date,
+      objective : row.objective,
+      target:row.target,
+      program :row.program,
+      id: row._id,
+     }))
+    )
+    // console.log("1")
+    //this is session
+    // setLoading(false)
+//set Session from notebook
     //callilng for LOCATION fields
     setLoading(false)
+    setEtatRecord(false)
     const loc = await getLocations()
     setLocation(
      loc.map((row) => ({
@@ -105,9 +105,7 @@ export default function Sessions() {
       id: row._id,
      }))
     )
-    console.log("3")
    } catch (e) {
-    // console.log("e : ", e)
     setLoading(false)
     setError(true)
    }
@@ -118,24 +116,19 @@ export default function Sessions() {
 
  //table of content
  const columns = [
-  { title: "Title", dataIndex: "title"  },
-  { title: "Player", dataIndex: "firstname", key: `_id`  },
+  { title: "Title", dataIndex: "title" },
+  { title: "Player", dataIndex: "firstname_player", key: `_id` },
   { title: "Date", dataIndex: "date" },
-  {title: "Location", dataIndex: "name" ,key: `_id` },
+  { title: "Location", dataIndex: "location", key: `_id` },
   { title: "Objective", dataIndex: "objective" },
   { title: "Target", dataIndex: "target" },
-
+  { title: "Program", dataIndex: "program" , key: `_id`},
   {
    title: "Actions",
    render: (record) => {
     return (
      <>
-      {/* <EditOutlined
-       className='mx-2'
-       onClick={(e) => {
-        onAssignSession(record)
-       }}
-      /> */}
+  
       <DeleteOutlined
        className='mx-2'
        onClick={() => {
@@ -151,7 +144,7 @@ export default function Sessions() {
 
  const onDeleteSession = (record) => {
   Modal.confirm({
-   title: "Are you sure, you want to delete this challenge record?",
+   title: "Are you sure, you want to delete this session record?",
    okText: "Yes",
    okType: "danger",
    onOk: () => {
@@ -165,20 +158,20 @@ export default function Sessions() {
  }
  const onAssignSession = (record) => {
   setIsAssigned(true)
-  setSession({ ...session, player: record._id })
+  setSessionplayer({ ...sessionplayer, player: record._id })
  }
  const resetAssign = () => {
   setIsAssigned(false)
-  setSession(null)
+  setSessionplayer(null)
  }
 
-  // const handleChange = (e) => {
-  //  // ({ value });
-  //  setPrefix1(e)
-  // }
-  const handleChangeSelect2 = (e) => {
-    setPlayerId(e)
-   }
+ // const handleChange = (e) => {
+ //  // ({ value });
+ //  setPrefix1(e)
+ // }
+ const handleChangeSelect2 = (e) => {
+  setPlayerId(e)
+ }
  const handleChangeSelect = (e) => {
   setLocationId(e)
  }
@@ -186,20 +179,7 @@ export default function Sessions() {
  const onFinish = () => {
   setIsAssigned(false)
  }
- //  const assign = async (session) => {
- //   try {
- //    await createSession(
- //     playerId,
- //     title,
- //     date,
- //     locationId,
- //     objective,
- //     target
- //    )
- //   } catch (e) {
- //    console.log("error")
- //   }
- //  }
+
  //congif and prefixSelector above
  const config = {
   rules: [
@@ -217,11 +197,10 @@ export default function Sessions() {
     defaultValue='Km'
     name='prefix1'
     id='prefix1'
-  
     style={{
      width: 70,
     }}
-      value={prefix1}
+    value={prefix1}
     onChange={(e) => setPrefix1(e.target.value)}
    >
     {" "}
@@ -248,23 +227,6 @@ export default function Sessions() {
    </Select>
   </Form.Item>
  )
- const assign = async (sess) => {
-  try {
-   await createSession(    
-    title,
-    playerId,
-    // date,
-    date || moment(new Date()).format("YYYY-MM-DD HH:mm:ss'"),
-    locationId,
-    objective,
-    target
-   )
-  } catch (e) {
-   console.log("error")
-  }
- }
-
-
 
  return (
   <Dashboard>
@@ -275,15 +237,13 @@ export default function Sessions() {
     </center>
     {loading && <div>Loading ... </div>}
     {error && <div>Error....</div>}
-    
+
     <Button
-      // id={record.id.slice(4)}
+     // id={record.id.slice(4)}
      type='primary'
-     id="makeSession"
+     id='makeSession'
      onClick={(record) => {
-      setPlayerId(record.id), 
-      onAssignSession(record),
-      setEtatRecord(true)
+      setPlayerId(record.id), onAssignSession(record), setEtatRecord(true)
       setIsAssigned(true)
      }}
      style={{ marginLeft: 12 }}
@@ -293,7 +253,6 @@ export default function Sessions() {
 
     {!loading && (
      <Table
-      
       onChange={onChange}
       columns={columns}
       dataSource={session}
@@ -319,17 +278,17 @@ export default function Sessions() {
       onCancel={() => {
        resetAssign()
       }}
-      // onOk={() => {
-      //  assign(title, playerId, date, locationId, objective, target)
-      //  message.success("Event Saved!")
-      // }}
-       onOk={assign}
+      onOk={() => {
+       assign(playerId, locationId, title, date, objective, target , programId)
+       message.success("Session Saved!")
+       onFinish()
+      }}
      >
-      <Form layout='vertical' >
+      <Form layout='vertical'>
        <Form.Item name='title' label='Name of the Title'>
         <Input
          value={title}
-         id="title"
+         id='title'
          onChange={(e) => setTitle(e.target.value)}
          name='title'
          placeholder='Workout Session'
@@ -341,14 +300,8 @@ export default function Sessions() {
         <Select
          placeholder='Select Player'
          style={{ width: "50%" }}
-         id="player"
-         //  onClick={() => {
-         //   onAssignSession(item)
-         //  }}
-        //  onChange={(key) =>
-        //   setLocationId(players.find((c) => c.firstname == key).id)
-        //  }
-        onChange={(key) =>
+         id='player'
+         onChange={(key) =>
           handleChangeSelect2(players.find((c) => c.firstname == key).id)
          }
         >
@@ -362,19 +315,18 @@ export default function Sessions() {
         </Select>
        </Form.Item>
        <Form.Item name='DatePicker' {...config} label='Session Date'>
-       <DatePicker 
-  
-       id="DatePicker"
-       showTime={{ format: 'HH:mm' }}
-       format="YYYY-MM-DD HH:mm"    
-       value={date}    
-       onChange={(e) => setDate(e)}
-       name='DatePicker'
-       required='true'
+        <DatePicker
+         id='DatePicker'
+         showTime={{ format: "HH:mm" }}
+         format='YYYY-MM-DD HH:mm'
+         value={date}
+         onChange={(e) => setDate(e)}
+         name='DatePicker'
+         required='true'
 
-      //  onChange={onChange} onOk={onOk}
+         //  onChange={onChange} onOk={onOk}
         />
-    
+
         {/* <DatePicker
         id='date'
          showTime
@@ -392,7 +344,7 @@ export default function Sessions() {
         <Select
          placeholder='Select location'
          style={{ width: "50%" }}
-         id="selectLocation"
+         id='selectLocation'
          //  onClick={() => {
          //   onAssignSession(item)
          //  }}
@@ -413,7 +365,7 @@ export default function Sessions() {
        <Form.Item name='objective' label='Objective'>
         <Input
          value={objective}
-         id="objective"
+         id='objective'
          onChange={(e) => setObjective(e.target.value)}
          name='details'
          type='text'
@@ -433,8 +385,6 @@ export default function Sessions() {
         />
        </Form.Item>
 
-
-
        <Form.Item name='time' label='in '>
         <Input
          addonAfter={prefixTimer}
@@ -442,7 +392,6 @@ export default function Sessions() {
          onChange={(e) => {
           setTarget(e.target.value + " " + prefix2)
          }}
-     
          style={{
           width: "100%",
          }}
@@ -454,13 +403,24 @@ export default function Sessions() {
         title='Program '
         label='Program of the Session'
        >
-        <Select placeholder='select program for session'>
-         <Option value='programme1'>programme1</Option>
-         <Option value='programme2'>programme2</Option>
-         <Option value='programme3'>programme3</Option>
-         <Option value='programme4'>programme4</Option>
-         <Option value='programme5'>programme5</Option>
+           <Select
+         placeholder='select program for session'
+         style={{ width: "50%" }}
+         id='selectLocation'
+       
+         onChange={(key) =>
+            setProgramId(program.find((c) => c.title == key).id)
+         }
+        >
+         {program.map((item) => {
+          return (
+           <Select.Option key={item._id} value={item.title}>
+            {item.title}
+           </Select.Option>
+          )
+         })}
         </Select>
+       
        </Form.Item>
       </Form>
      </Modal>

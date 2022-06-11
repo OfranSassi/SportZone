@@ -18,6 +18,7 @@ exports.createEvents = async(req,res)=>{
     coach: coach._id,
     state:req.body.state,
     details:req.body.details,
+    participating:req.body.participating,
     });
     await events.save();
     coach.events.push(events);
@@ -103,4 +104,35 @@ exports.deleteEvents = (req, res) => {
          })
             
         };
-      
+
+
+
+        
+      exports.GetEventsPlayer = async (req, res) => {
+   
+        
+        Events.find({ player: req.userId   })
+        .populate({path:'coach' , select:'firstname email'}).populate('location').exec((err, events) => {
+         res.json({ events: events });
+        })
+           
+       };
+      // choisir participating ou pas à un de mes events
+exports.participatingEvents = (req, res) => {
+  Events.findOneAndUpdate(
+  { _id: req.params.id },
+  {
+    $set: {
+      participating: req.body.participating,
+    },
+  },
+  function (err, eventsplayer) {
+    if (err) {
+      res.status(400).json({ msg: "Something wrong when updating data!" });
+    } else {
+      res.json({ eventsplayer });
+      console.log(eventsplayer);
+    }
+  }
+);
+};

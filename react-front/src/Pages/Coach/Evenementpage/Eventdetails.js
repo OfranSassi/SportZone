@@ -43,6 +43,7 @@ export default function Eventform() {
       final_date: row.final_date,
       state: row.state,
       details: row.details,
+      participating: row.participating,
       id: row._id,
      }))
     )
@@ -91,6 +92,7 @@ export default function Eventform() {
   { title: "Details", dataIndex: "details" },
   { title: "Start Date", dataIndex: "start_date" },
   { title: "Final Date", dataIndex: "final_date" },
+  { title: "Player participation", dataIndex: "participating" },
 
   {
    title: "Actions",

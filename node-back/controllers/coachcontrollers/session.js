@@ -47,10 +47,9 @@ exports.createSession = async(req,res)=>{
 // };
 
 exports.showSession = async (req, res) => {
-  Session.find({ coach: req.userId, player: req.params.id, location: req.params.id})
-    .populate("player")
-    .populate("coach")
-    .populate("location")
+  console.log("req.userId :" ,req.userId )
+  Session.find({ coach: req.userId})
+  .populate('player').populate("location")
     .exec((err, session) => {
       res.json({ session: session });
     });
@@ -125,7 +124,7 @@ exports.showSessionByPlayer = async (req, res) => {
    
         
   Session.find({ coach: req.userId , player:req.params.id  })
-  .populate('location').populate('player').populate('coach').exec((err, session) => {
+  .populate('player').populate('location').exec((err, session) => {
    res.json({ session: session });
   })
      

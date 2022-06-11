@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom"
 import {
  getEvents,
  getPlayers,
- createEvents,
  assign
 } from "../../../services/coachservices/events"
 import {

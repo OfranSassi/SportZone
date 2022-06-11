@@ -1,6 +1,7 @@
 import axios from "axios"
 import { message } from "antd"
 const API_URL = "http://localhost:5001/coach/events"
+const API_URL3 = "http://localhost:5001"
 const API_URL2 = "http://localhost:5001/coach/players/all"
 
 export const createEvents = async (
@@ -91,14 +92,24 @@ export const getEvents = async () => {
 }
 
 export const getEventsByPlayer = async (id) => {
- const result = await axios.get(API_URL + `/player/${id}`, {
-  headers: {
-   Authorization: `Bearer ${localStorage.getItem("token")}`,
-  },
- })
- console.log(" result.data.events   :", result.data.events)
- return result.data.events
-}
+    const result = await axios.get(API_URL + `/player/${id}`, {
+     headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+     },
+    })
+    console.log(" result.data.events   :", result.data.events)
+    return result.data.events
+   }
+
+export const getALLEventsPlayer = async () => {
+    const result = await axios.get(API_URL3 + `/player/events/all`, {
+     headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+     },
+    })
+    console.log(" result.data.events   :", result.data.events)
+    return result.data.events
+   }
 
 export const updateEvent = async (id, event) => {
  console.log("plauer location :", event)
@@ -132,24 +143,72 @@ export const deleteEvents = async (id) => {
  return res.data.events
 }
 
-export const playerParticipating = async (participating) => {
- const res = await axios
-  .post(
-   API_URL + `/create`,
-   {
-    //here continue....
-    participating: participating,
-   },
-   {
-    headers: {
-     Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
+// export const playerParticipating = async (participating) => {
+//  const res = await axios
+//   .post(
+//    API_URL + `/create`,
+//    {
+//     //here continue....
+//     participating: participating,
+//    },
+//    {
+//     headers: {
+//      Authorization: `Bearer ${localStorage.getItem("token")}`,
+//     },
+//    }
+//   )
+//   .then((res) => {
+//    message.success("Participation Saved!")
+//    console.log("------", res)
+//   })
+//  //name of the modal bellow
+//  return res.data.events
+// }
+//player participating 
+export const playerParticipating = async (
+    participating
+   ) => {
+    const res = await axios.post(
+     //    API_URL + `/create`,
+     API_URL + `/assign`,
+     {
+        participating
+     },
+     {
+      headers: {
+       Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+     }
+    )
+    return res.data.events
    }
-  )
-  .then((res) => {
-   message.success("Participation Saved!")
-   console.log("------", res)
-  })
- //name of the modal bellow
- return res.data.events
-}
+   
+   export const assign2 = async (
+    id , status
+   ) => {
+    try {
+     await axios
+      .post(
+       API_URL3 + `/player/events/participating/${id}`,
+       {
+       
+        participating: status,
+       },
+       {
+        headers: {
+         Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+       }
+      )
+      .then((res) => {
+       message.success("Participation Saved!")
+       console.log("------", res)
+      })
+    } catch (e) {
+     message.error("Something went wrong!")
+     console.log("error")
+    }
+   }
+   
+
+
