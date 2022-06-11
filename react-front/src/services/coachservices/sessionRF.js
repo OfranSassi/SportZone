@@ -2,6 +2,7 @@ import axios from "axios"
 import { message } from "antd"
 const API_URL = "http://localhost:5001/coach/session"
 const API_URL2 = "http://localhost:5001/coach/players/all"
+const API_URL3 = "http://localhost:5001/coach/program"
 
 export const createSession = async (
  player,
@@ -42,6 +43,7 @@ export const assign = async (
    programId
  ) => {
   try {
+    console.log("ttttt : " , target)
    await axios
     .post(
      API_URL + `/create`,
@@ -165,13 +167,15 @@ export const getSessions = async () => {
  return result.data.session
 }
 export const getProgram = async () => {
-  const result = await axios.get(API_URL + `/all`, {
+  const result = await axios.get(API_URL3 + `/all`, {
    headers: {
     Authorization: `Bearer ${localStorage.getItem("token")}`,
    },
   })
-  return result.data.session
+  
+  return result.data.program
  }
+
 export const getReasons = async () => {
  const result = await axios.get(API_URL + `/reasons`, {
   headers: {

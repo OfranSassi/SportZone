@@ -22,7 +22,7 @@ let programSchema = new Schema({
   picture: {
     data: Buffer,
     contentType: String,
-    required: true,
+    required: false,
   },
 
   session: { type: mongoose.Schema.Types.ObjectId, ref: "session" },

@@ -11,6 +11,7 @@ const coachControllerPlayers = require("../controllers/coachcontrollers/players"
 const coachControllerPlayer = require("../controllers/coachcontrollers/playerProfile");
 const coachControllerStatistic = require("../controllers/coachcontrollers/statistic");
 const coachControllerEvents = require("../controllers/coachcontrollers/events");
+const coachControllerProgram = require("../controllers/coachcontrollers/program");
 
 //creation d'un lieu (location)
 router.post(
@@ -343,12 +344,14 @@ router.get(
   coachControllerSession.getSessionById
 );
 
-//get Session by id
+//get Program by id
 router.get(
-  "/session/player/:id",
+  "/program/all",
   jsonParser,
   [authJwt.verifyToken, authJwt.isCoach],
-  coachControllerSession.showSessionByPlayer
+  coachControllerProgram.GetProgram
 );
+
+
 
 module.exports = router;

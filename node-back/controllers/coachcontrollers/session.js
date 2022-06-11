@@ -3,6 +3,8 @@ const Reason = require("../../models/reason");
 var Session = require("../../models/session");
 var User = require("../../models/user");
 var Location = require ("../../models/training_location")
+var Program = require ("../../models/program")
+
 // var Program = require ("../../models/program")
 
 
@@ -13,7 +15,7 @@ exports.createSession = async(req,res)=>{
   // const player = await User.findById(req.body.player);
   const player = await User.findOne({ _id: req.body.player });
   const location = await Location.findById(req.body.location);
-  // const program = await Program.findById(req.body.location);
+   const program = await Program.findById(req.body.program);
   console.log("req           ",req.body.location);
   console.log("location    ",location);
   let session = new Session({
@@ -22,7 +24,7 @@ exports.createSession = async(req,res)=>{
    date:req.body.date,
    target: req.body.target,
    location:location,
-  // program:program,
+program:program,
   coach: coach._id,
   objective:req.body.objective,
   });
@@ -49,7 +51,7 @@ exports.createSession = async(req,res)=>{
 exports.showSession = async (req, res) => {
   console.log("req.userId :" ,req.userId )
   Session.find({ coach: req.userId})
-  .populate('player').populate("location")
+  .populate('player').populate("location").populate("program")
     .exec((err, session) => {
       res.json({ session: session });
     });

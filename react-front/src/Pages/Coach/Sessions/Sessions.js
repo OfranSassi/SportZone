@@ -39,7 +39,9 @@ export default function Sessions() {
  const [title, setTitle] = useState("")
  const [objective, setObjective] = useState("")
  const [date, setDate] = useState([""])
- const [target, setTarget] = useState("")
+
+ const [target1, setTarget1] = useState("")
+ const [target2, setTarget2] = useState("[]")
  const [prefix1, setPrefix1] = useState("")
  const [prefix2, setPrefix2] = useState("")
  const [programId, setProgramId] = useState([])
@@ -68,13 +70,15 @@ export default function Sessions() {
     )
 
     const prog = await getProgram()
+    console.log("program : " , prog)
     setProgram(
         prog.map((row) => ({
-            program: row.title,
+            title: row.title,
       id: row._id,
      }))
     )
     const sess = await getSessions()
+    console.log("Session : " , sess)
     setSession(
         sess.map((row) => ({
       firstname_player:
@@ -84,7 +88,7 @@ export default function Sessions() {
       date : row.date,
       objective : row.objective,
       target:row.target,
-      program :row.program,
+      program : row.program == undefined ? "" : row.program["title"],
       id: row._id,
      }))
     )
@@ -128,7 +132,6 @@ export default function Sessions() {
    render: (record) => {
     return (
      <>
-  
       <DeleteOutlined
        className='mx-2'
        onClick={() => {
@@ -201,7 +204,7 @@ export default function Sessions() {
      width: 70,
     }}
     value={prefix1}
-    onChange={(e) => setPrefix1(e.target.value)}
+    onChange={(e) => {setPrefix1(e) }}
    >
     {" "}
     <Option value='Km'>Km</Option>
@@ -217,7 +220,7 @@ export default function Sessions() {
     style={{
      width: 70,
     }}
-    onChange={(e) => setPrefix2(e.target.value)}
+    onChange={(e) => setPrefix2(e)}
     name='prefix2'
    >
     {" "}
@@ -279,7 +282,8 @@ export default function Sessions() {
        resetAssign()
       }}
       onOk={() => {
-       assign(playerId, locationId, title, date, objective, target , programId)
+          const targetSession ="Make "+ target1 + " in " + target2
+       assign(playerId, locationId, title, date, objective, targetSession , programId)
        message.success("Session Saved!")
        onFinish()
       }}
@@ -374,9 +378,9 @@ export default function Sessions() {
        <Form.Item name='target' label='Goal to Reach: Make'>
         <Input
          addonAfter={prefixSelector}
-         value={target}
-         onChange={(e) => {
-          setTarget(e.target.value + " " + prefix1)
+         value={target1}
+         onChange={(e) => { console.log(e.target.from);
+          setTarget1( e.target.value + " " + prefix1)
          }}
          style={{
           width: "100%",
@@ -388,9 +392,9 @@ export default function Sessions() {
        <Form.Item name='time' label='in '>
         <Input
          addonAfter={prefixTimer}
-         value={target}
+         value={target2}
          onChange={(e) => {
-          setTarget(e.target.value + " " + prefix2)
+          setTarget2( e.target.value + " " + prefix2)
          }}
          style={{
           width: "100%",
@@ -408,9 +412,9 @@ export default function Sessions() {
          style={{ width: "50%" }}
          id='selectLocation'
        
-         onChange={(key) =>
+         onChange={(key) =>{
             setProgramId(program.find((c) => c.title == key).id)
-         }
+         }}
         >
          {program.map((item) => {
           return (

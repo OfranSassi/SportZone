@@ -2,6 +2,27 @@
 // import Programme_session from './../../../react-front/src/Pages/Coach/programme_sessionpage/Programme_session';
 // var User = require("../../models/user");
 // var Programme_session= require("../../models/training_location");
+var Program = require("../../models/program");
+
+//affichers les programmes
+
+// exports.showProgram = async (req, res) => {
+//     Program.find({ coach: req.userId }, function (err, program) {
+//         res.json({ program: program });
+//       });
+//   };
+
+  exports.GetProgram = async (req, res) => {
+   
+        
+    Program.find()
+    .exec((err, program) => {
+     res.json({ program: program });
+    })
+       
+   };
+
+
 
 // // creation d'un lieu d'entrainement
 // exports.createLocation = async (req, res) => {
