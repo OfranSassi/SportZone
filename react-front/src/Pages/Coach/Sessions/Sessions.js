@@ -41,9 +41,9 @@ export default function Sessions() {
  const [date, setDate] = useState([""])
 
  const [target1, setTarget1] = useState("")
- const [target2, setTarget2] = useState("[]")
- const [prefix1, setPrefix1] = useState("")
- const [prefix2, setPrefix2] = useState("")
+ const [target2, setTarget2] = useState("")
+ const [prefix1, setPrefix1] = useState("km")
+ const [prefix2, setPrefix2] = useState("hr")
  const [programId, setProgramId] = useState([])
  const [program, setProgram] = useState()
  const [playerId, setPlayerId] = useState([])
@@ -85,7 +85,7 @@ export default function Sessions() {
       row.player == undefined ? "" : row.player["firstname"],
       location: row.location == undefined ? "" : row.location["name"],
       title : row.title,
-      date : row.date,
+      date : moment(row.date).format("YYYY-MM-DD hh:mm"),
       objective : row.objective,
       target:row.target,
       program : row.program == undefined ? "" : row.program["title"],
@@ -204,10 +204,10 @@ export default function Sessions() {
      width: 70,
     }}
     value={prefix1}
-    onChange={(e) => {setPrefix1(e) }}
+    onSelect={(e) => {setPrefix1(e) }}
    >
     {" "}
-    <Option value='Km'>Km</Option>
+    <Option  value='Km'>Km</Option>
     <Option value='m'>m</Option>
    </Select>
   </Form.Item>
@@ -216,12 +216,14 @@ export default function Sessions() {
  const prefixTimer = (
   <Form.Item name='prefix2' noStyle>
    <Select
+   defaultValue="hr"
     value={prefix2}
     style={{
      width: 70,
     }}
     onChange={(e) => setPrefix2(e)}
     name='prefix2'
+    id='prefix2'
    >
     {" "}
     <Select.Option value='hr'>hr</Select.Option>
@@ -286,6 +288,7 @@ export default function Sessions() {
        assign(playerId, locationId, title, date, objective, targetSession , programId)
        message.success("Session Saved!")
        onFinish()
+       setEtatRecord(true)
       }}
      >
       <Form layout='vertical'>
@@ -379,13 +382,14 @@ export default function Sessions() {
         <Input
          addonAfter={prefixSelector}
          value={target1}
-         onChange={(e) => { console.log(e.target.from);
-          setTarget1( e.target.value + " " + prefix1)
+       
+         onChange={(e) => { 
+            setTarget1( e.target.value + " " + prefix1)
          }}
          style={{
           width: "100%",
          }}
-         type='text'
+         type='text' 
         />
        </Form.Item>
 
@@ -393,6 +397,7 @@ export default function Sessions() {
         <Input
          addonAfter={prefixTimer}
          value={target2}
+         
          onChange={(e) => {
           setTarget2( e.target.value + " " + prefix2)
          }}

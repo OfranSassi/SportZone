@@ -13,7 +13,7 @@ import moment from "moment"
 import { CheckOutlined, CloseOutlined  } from "@ant-design/icons"
 
 
-export default function Coachevent() {
+export default function eventsPlayer() {
  const [isAssigned, setIsAssigned] = useState(false)
  const [page, setPage] = useState(1)
  const [pageSize, setPageSize] = useState(10)
@@ -114,10 +114,6 @@ setEtatRecord(true)
      </>
     )
    },
-
-
-
-
 
 },
 

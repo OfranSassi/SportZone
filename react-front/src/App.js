@@ -30,7 +30,7 @@ import Abonnementpage from "./Pages/Coach/abonnement/abonnementpage"
 import ChallengeForm from "./Pages/Coach/challenge/Challengeform"
 
 import EventsPlayer from "./Pages/Player/Eventsplayer/eventsPlayer"
-import SessionDetails from "./Pages/Coach/Sessions/Sessiondetails"
+// import SessionDetails from "./Pages/Coach/Sessions/Sessiondetails"
 
 // import Axios from 'axios' 
 

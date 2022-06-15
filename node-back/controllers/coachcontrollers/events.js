@@ -1,5 +1,6 @@
-var Events = require("../../models/events");
+
 var User = require("../../models/user");
+var Events = require("../../models/events");
 var Location = require ("../../models/training_location")
 
 //ajouter un evenement  
