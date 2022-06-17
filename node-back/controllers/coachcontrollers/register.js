@@ -9,7 +9,8 @@ exports.registerCoach = async (req, res) => {
       firstname: req.body.firstname,
       email: req.body.email,
       password: hash,
-      role: "coach",
+      // role: "coach",
+      role: req.body.role
     });
 
     User.find({ email: req.body.email }, (err, users) => {

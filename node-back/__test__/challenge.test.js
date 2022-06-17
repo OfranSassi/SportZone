@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const app = createServer();
 const { MongoMemoryServer } = require("mongodb-memory-server");
 
-describe("Events ", () => {
+describe("Challenge ", () => {
   jest.setTimeout(10000);
   beforeAll(async () => {
     const mongoServer = await MongoMemoryServer.create();
@@ -49,9 +49,9 @@ describe("Events ", () => {
       });
   });
 
-  test("should get All events ", async () => {
+  test("should get All challenges ", async () => {
     await request(app)
-      .get("/coach/events/all")
+      .get("/coach/challenge/all")
       .set("Authorization", "Bearer " + token)
       .expect(200)
       .then((res) => {
@@ -59,55 +59,55 @@ describe("Events ", () => {
       });
   });
 
-  test("should Add a event", async () => {
-    const res = await request(app)
-      .post("/coach/location/create")
-      .set("Authorization", "Bearer " + token)
-      .send({
-        "name": "Manouba",
-        "city": "test",
-        "country": "TUnisia",
-        "address": "bla bla",
-      });
- 
+  test("should Add a challenge", async () => {
+    registerData = {
+        firstname: "test",
+        lastname: "test",
+        email: "test2008@gmail.com",
+        role: "player",
+        password: "123456",
+      };
 
+      const res = await request(app)
+      
+        .post("/register/coach")
+        .send(registerData)
+        console.log("testtttttt", res.body);
     const data = {
-      label: "friendly match",
+      video_link:
+        "https://www.youtube.com/watch?v=6wbnwsKrnYU&t=228s&ab_channel=TheNetNinja",
+      objective: "Workout Session",
       start_date: "2022-05-28",
       final_date: "2022-05-30",
-      state: "Private",
-      details: "Friendly Match taking place in Bardo",
-      location: res.body.location._id,
-      player: "6269d00af1506b433a14abbe",
+      player: res.body.coach._id,
+    //   player: "6269d00af1506b433a14abbe",
+    
     };
     await request(app)
-      .post("/coach/events/create")
+      .post("/coach/challenge/create")
       .set("Authorization", "Bearer " + token)
       .send(data)
       .expect(200)
       .then(async (response) => {
         expect(response.body).toBeTruthy();
-        expect(response.body.events.label).toBe(data.label);
-        expect(response.body.events.state).toBe(data.state);
-        expect(response.body.events.details).toBe(data.details);
-        expect(response.body.events.player).toBe(data.player);
-        expect(response.body.events.location).toBe(data.location);
+        expect(response.body.challenge.video_link).toBe(data.video_link);
+        expect(response.body.challenge.objective).toBe(data.objective);
+        expect(response.body.challenge.start_date).toBe(data.start_date);
+        expect(response.body.challenge.final_date).toBe(data.final_date);
 
-        savedEvent = response.body.events;
+
+        savedChallenge = response.body.challenge;
       });
   });
 
-  test("should update a event", async () => {
+  test("should Update a challenge", async () => {
     const data = {
-      label: "new friendly match",
-      state: "Private",
-      details: "Friendly Match taking place in Manouba",
-      location: savedEvent.location
+      objective: "Challenge another player",
+      details: "Workout arms",
     };
-    console.log("test ......", savedEvent._id);
-    console.log("test 2 ......", savedEvent);
+
     await request(app)
-      .put("/coach/events/update/" + savedEvent._id)
+      .put("/coach/challenge/update/" + savedChallenge._id)
       .set("Authorization", "Bearer " + token)
       .send(data)
       .expect(200)
@@ -116,9 +116,9 @@ describe("Events ", () => {
       });
   });
 
-  test("should get a event by id ", async () => {
+  test("should get a challenge by id ", async () => {
     await request(app)
-      .get("/coach/events/" + savedEvent._id)
+      .get("/coach/challenge/player/" + savedChallenge.player)
       .set("Authorization", "Bearer " + token)
       .expect(200)
       .then(async (response) => {
@@ -126,9 +126,9 @@ describe("Events ", () => {
       });
   });
 
-  test("should delete a event by id ", async () => {
+  test("should Delete a challenge by id ", async () => {
     await request(app)
-      .delete("/coach/events/delete/" + savedEvent._id)
+      .delete("/coach/challenge/delete/" + savedChallenge._id)
       .set("Authorization", "Bearer " + token)
       .expect(200)
       .then(async (response) => {
@@ -136,13 +136,13 @@ describe("Events ", () => {
       });
   });
 
-  test("should not found a event by id ", async () => {
+  test("should not found a challenge by id ", async () => {
     await request(app)
-      .get("/coach/events/" + savedEvent._id)
+      .get("/coach/challenge/player/123")
       .set("Authorization", "Bearer " + token)
-      .expect(200)
+      .expect(400)
       .then(async (response) => {
-        expect(response.body.events).toBe(null);
+        expect(response.body.challenges).toBe(undefined);
       });
   });
 });

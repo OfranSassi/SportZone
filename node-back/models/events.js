@@ -12,11 +12,11 @@ let eventsSchema = new Schema(
     
     start_date: { 
         type:String,
-        required:true 
+        required:false 
     },
     final_date: {
          type:String,
-         required:true 
+         required:false 
     },
 
     state: { 

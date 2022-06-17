@@ -6,24 +6,17 @@ var Location = require ("../../models/training_location")
 //ajouter un evenement  
 exports.createEvents = async(req,res)=>{
     const coach = await User.findById(req.userId);
-    const player = await User.findById(req.body.player);
-    const location = await Location.findById(req.body.location);
-    console.log("req           ",req.body.location);
-    console.log("location    ",location);
-    let events = new Events({
-     player: player._id, 
-    label: req.body.label,
-    start_date:req.body.start_date == undefined ?"":req.body.start_date,
-    final_date:req.body.final_date == undefined ?"":req.body.final_date,
-    location:location,
-    coach: coach._id,
-    state:req.body.state,
-    details:req.body.details,
-    participating:req.body.participating,
-    });
+    // const player = await User.findById(req.body.player);
+    // const location = await Location.findById(req.body.location);
+    // console.log("req           ",req.body.location);
+    // console.log("location    ",location);
+    req.body.coach= coach._id
+    let events = new Events(req.body);
     await events.save();
     coach.events.push(events);
     await coach.save();
+    
+
     return res.json({ events });
 };
 
@@ -126,6 +119,9 @@ exports.participatingEvents = (req, res) => {
     $set: {
       participating: req.body.participating,
     },
+  },
+  {
+    new:true
   },
   function (err, eventsplayer) {
     if (err) {

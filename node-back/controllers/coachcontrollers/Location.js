@@ -12,7 +12,7 @@ exports.createLocation = async (req, res) => {
     country: req.body.country,
     address: req.body.address,
   });
-  await location.save();
+  location = await location.save();
   coach.locationtraining.push(location);
   await coach.save();
   return res.json({ location: location });

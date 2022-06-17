@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const app = createServer();
 const { MongoMemoryServer } = require("mongodb-memory-server");
 
-describe("Events ", () => {
+describe("Session ", () => {
   jest.setTimeout(10000);
   beforeAll(async () => {
     const mongoServer = await MongoMemoryServer.create();
@@ -49,9 +49,9 @@ describe("Events ", () => {
       });
   });
 
-  test("should get All events ", async () => {
+  test("should get All sessions ", async () => {
     await request(app)
-      .get("/coach/events/all")
+      .get("/coach/session/all")
       .set("Authorization", "Bearer " + token)
       .expect(200)
       .then((res) => {
@@ -59,55 +59,54 @@ describe("Events ", () => {
       });
   });
 
-  test("should Add a event", async () => {
+  test("should Add a session", async () => {
     const res = await request(app)
       .post("/coach/location/create")
       .set("Authorization", "Bearer " + token)
       .send({
-        "name": "Manouba",
-        "city": "test",
-        "country": "TUnisia",
-        "address": "bla bla",
+        name: "Manouba",
+        city: "test",
+        country: "Tunisia",
+        address: "bla bla",
       });
- 
 
     const data = {
-      label: "friendly match",
-      start_date: "2022-05-28",
-      final_date: "2022-05-30",
-      state: "Private",
-      details: "Friendly Match taking place in Bardo",
+      title: "new session	",
+      date: "2022-06-16 08:23",
+      target: "Make 100 m in 20 min",
+      objective: "new session Objective",
       location: res.body.location._id,
       player: "6269d00af1506b433a14abbe",
     };
     await request(app)
-      .post("/coach/events/create")
+      .post("/coach/session/create")
       .set("Authorization", "Bearer " + token)
       .send(data)
       .expect(200)
       .then(async (response) => {
         expect(response.body).toBeTruthy();
-        expect(response.body.events.label).toBe(data.label);
-        expect(response.body.events.state).toBe(data.state);
-        expect(response.body.events.details).toBe(data.details);
-        expect(response.body.events.player).toBe(data.player);
-        expect(response.body.events.location).toBe(data.location);
+        expect(response.body.session.title).toBe(data.title);
+        expect(response.body.session.date).toBe(data.date);
+        expect(response.body.session.target).toBe(data.target);
+        expect(response.body.session.objective).toBe(data.objective);
+        expect(response.body.session.location._id).toBe(data.location);
 
-        savedEvent = response.body.events;
+        savedSession = response.body.session;
       });
+      
   });
 
-  test("should update a event", async () => {
+  test("should Update a session", async () => {
     const data = {
-      label: "new friendly match",
-      state: "Private",
-      details: "Friendly Match taking place in Manouba",
-      location: savedEvent.location
+      title: "new session 123	",
+      objective: "new session Objective 123",
+      target: "Make 500 m in 1 hr",
+      location: savedSession.location,
     };
-    console.log("test ......", savedEvent._id);
-    console.log("test 2 ......", savedEvent);
+    console.log("test ......", savedSession._id);
+    console.log("test 2 ......", savedSession);
     await request(app)
-      .put("/coach/events/update/" + savedEvent._id)
+      .put("/coach/session/update/" + savedSession._id)
       .set("Authorization", "Bearer " + token)
       .send(data)
       .expect(200)
@@ -116,9 +115,9 @@ describe("Events ", () => {
       });
   });
 
-  test("should get a event by id ", async () => {
+  test("should get a session by id ", async () => {
     await request(app)
-      .get("/coach/events/" + savedEvent._id)
+      .get("/coach/session/" + savedSession._id)
       .set("Authorization", "Bearer " + token)
       .expect(200)
       .then(async (response) => {
@@ -126,9 +125,9 @@ describe("Events ", () => {
       });
   });
 
-  test("should delete a event by id ", async () => {
+  test("should delete a session by id ", async () => {
     await request(app)
-      .delete("/coach/events/delete/" + savedEvent._id)
+      .delete("/coach/session/delete/" + savedSession._id)
       .set("Authorization", "Bearer " + token)
       .expect(200)
       .then(async (response) => {
@@ -136,13 +135,24 @@ describe("Events ", () => {
       });
   });
 
-  test("should not found a event by id ", async () => {
+  test("should not found a session by id ", async () => {
     await request(app)
-      .get("/coach/events/" + savedEvent._id)
+      .get("/coach/session/" + savedSession._id)
       .set("Authorization", "Bearer " + token)
       .expect(200)
       .then(async (response) => {
-        expect(response.body.events).toBe(null);
+        expect(response.body.session).toBe(null);
       });
   });
+
+  test("should get error when deleting a session  ", async () => {
+    await request(app)
+      .delete("/coach/session/delete/123"  )
+      .set("Authorization", "Bearer " + token)
+      .expect(400)
+      .then(async (response) => {
+        expect(response.body).toBeTruthy();
+      });
+  });
+
 });

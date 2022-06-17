@@ -200,12 +200,13 @@ router.get(
 //   [authJwt.verifyToken, authJwt.isCoach],
 //   coachControllerSession.showAllSession
 // );
-router.get(
-  "/session/reasons",
-  jsonParser,
-  [authJwt.verifyToken, authJwt.isCoach],
-  coachControllerSession.showAllReasons
-);
+
+// router.get(
+//   "/session/reasons",
+//   jsonParser,
+//   [authJwt.verifyToken, authJwt.isCoach],
+//   coachControllerSession.showAllReasons
+// );
 //afficher les seances non rejetés
 router.get(
   "/session/show/actives",

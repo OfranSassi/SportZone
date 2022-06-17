@@ -44,7 +44,7 @@ isPlayer = (req, res, next) => {
       res.status(500).send({ message: err });
       return;
     }
-    console.log(user);
+    console.log("test USER",user);
     if (user.role === "player") {
       next();
       return;

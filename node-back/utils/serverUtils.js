@@ -10,6 +10,7 @@ const createServer = () => {
     var apiRoutes = require("../routes/api");
     var playerRoutes = require("../routes/player");
     var coachRoutes = require("../routes/coach");
+    
     app.use(cors());
     app.use("/", apiRoutes);
     app.use("/player", playerRoutes);

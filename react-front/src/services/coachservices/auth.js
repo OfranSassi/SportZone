@@ -9,6 +9,7 @@ export const register = async (email, password, firstname, lastname) => {
    password,
    firstname,
    lastname,
+   role:"coach"
   },
   {
    headers: {

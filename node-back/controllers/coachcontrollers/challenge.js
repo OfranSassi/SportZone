@@ -3,6 +3,7 @@ var Challenge = require("../../models/challenge");
 var Challengeplayer = require("../../models/challengeplayer");
 // create challenge 
 exports.createChallenge = async (req, res) => {
+  // const coach = await User.findById(req.userId);
   const coach = await User.findOne({ _id: req.userId });
   const player = await User.findOne({ _id: req.body.player });
   let challenge = new Challenge({
@@ -13,9 +14,13 @@ exports.createChallenge = async (req, res) => {
     coach: coach._id,
     player: player._id,
   });
+  // req.body.coach= coach._id
+  // let challenges = new Challenge(req.body);
+
   await challenge.save();
   coach.challenges.push(challenge);
   await coach.save();
+
   player.challenges.push(challenge);
   await player.save();
   return res.json({ challenge });
@@ -42,12 +47,20 @@ exports.assignChallenge = async (req, res) => {
 };
 
 exports.showChallengesByPlayer = async (req, res) => {
-  Challenge.find({ coach: req.userId, player: req.params.id })
-    .populate("player")
-    .populate("coach")
-    .exec((err, challenges) => {
-      res.json({ challenges: challenges });
-    });
+
+ try {
+  const challenge = await Challenge.find({ coach: req.userId, player: req.params.id })
+  .populate("player")
+  .populate("coach")
+  if (challenge){
+    res.json({ challenges: challenge });
+
+  }else { res.status(400).send("Something went wrong")
+   
+  }
+ } catch (error) {
+  res.status(400).send("Something went wrong")
+ }
 };
 
 exports.showChallenges = async (req, res) => {
@@ -72,72 +85,6 @@ exports.deleteChallenge = (req, res) => {
     }
   });
 };
-
-//modifier events
-// exports.updateChallenge = async (req, res) => {
-//   // const events = await Events.findById( {_id:req.body.events});
-
-//   //   const challenge = await Challenge.findById( req.params.id)
-//   // console.log("challenge1 : " , challenge)
-//        // update the user object found using findOne
-//       //  challenge.video_link = req.body.video_link
-//       //  challenge.objective = req.body.objective
-//       //  challenge.start_date = req.body.start_date
-//       //  challenge.final_date = req.body.final_date
-//       try {
-//         await Challenge.findByIdAndUpdate(req.params.id, {
-//           video_link: req.body.video_link,
-//           objective: req.body.objective,
-//           start_date: req.body.start_date,
-//           final_date: req.body.final_date,
-//         });
-//         // Send response in here
-//         res.send('Item Updated!');
-
-//       } catch(err) {
-//           console.error(err.message);
-//           res.send(400).send('Server Error');
-//       }
-//       //  Challenge.findByIdAndUpdate({_id:req.params.id} , req.body)
-//       //  Challenge.sa
-//        // now update it in MongoDB
-//       //  Challenge.updateMany(function (err, challenge) {
-//       //     if (err) {
-//       //       res.status(400).json({
-//       //         error: err,
-//       //       });
-//       //     } else {
-//       //       res.status(200).json({
-//       //           challenge,
-//       //       });
-//       //     }
-//       //   })
-
-//       }
-
-// Challenge.findOneAndUpdate(
-//   { _id: req.params.id },
-//   {
-//     $set: {
-
-//       video_link: req.body.video_link,
-//       objective: req.body.objective,
-//       start_date: req.body.start_date,
-//       final_date: req.body.final_date,
-//       // coach: coach._id,
-//       // player:player._id,
-//     },
-//   },
-// function (err, challenge) {
-//   if (err) {
-//     res.status(400).json({ msg: "Something wrong when updating data!" });
-//   } else {
-//     res.json({ challenge });
-//     console.log(challenge);
-//   }
-// }
-// )
-// };
 exports.updateChallenge = (req, res) => {
   Challenge.findOneAndUpdate(
     { _id: req.params.id },
