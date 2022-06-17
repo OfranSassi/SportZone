@@ -27,7 +27,7 @@ describe("CRUD Event :", () => {
   cy.get(".ant-btn-default > span").click()
  })
 
- it("Editing an Event", function () {
+ it.only("Editing an Event", function () {
   const email = "ofransassy@gmail.com"
   const password = "Ofran1"
 
@@ -40,6 +40,10 @@ describe("CRUD Event :", () => {
   cy.get(":nth-child(1) > :nth-child(5) > :nth-child(2) > span").click()
   cy.wait(3000)
   cy.get(":nth-child(1) > :nth-child(9) > #editButton > svg").click()
+  cy.get('#EditButton > svg').click()
+cy.get('#label').clear().type("Editing events with cypress")
+cy.get("#selectLocation").click()
+cy.contains("Manouba").should("be.visible").click()
  })
 
  it("Deleting an Event", function () {
@@ -54,7 +58,7 @@ describe("CRUD Event :", () => {
   cy.visit("/coach-events")
   cy.get(":nth-child(1) > :nth-child(5) > :nth-child(2) > span").click()
   cy.wait(3000)
-  cy.get(":nth-child(3) > :nth-child(9) > .anticon-delete > svg").click()
-  cy.get(".ant-btn-dangerous").click()
+  cy.get(':nth-child(1) > :nth-child(10) > .anticon-delete > svg').click()
+  cy.get('.ant-btn-dangerous').click()
  })
 })

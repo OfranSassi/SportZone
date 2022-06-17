@@ -307,7 +307,7 @@ export default function Sessions() {
         <Select
          placeholder='Select Player'
          style={{ width: "50%" }}
-         id='player'
+         id='Selectplayer'
          onChange={(key) =>
           handleChangeSelect2(players.find((c) => c.firstname == key).id)
          }

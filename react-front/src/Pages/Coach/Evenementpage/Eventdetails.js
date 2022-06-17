@@ -100,7 +100,7 @@ export default function Eventform() {
     return (
      <>
       <EditOutlined
-       id="editButton"
+       id="EditButton"
        className='mx-2'
        onClick={(e) => {
          console.log("record", record);
