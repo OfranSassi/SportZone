@@ -121,9 +121,39 @@ export default function Sessions() {
  //table of content
  const columns = [
   { title: "Title", dataIndex: "title" },
-  { title: "Player", dataIndex: "firstname_player", key: `_id` },
-  { title: "Date", dataIndex: "date" },
-  { title: "Location", dataIndex: "location", key: `_id` },
+  { title: "Player", dataIndex: "firstname_player", key: `_id` ,
+
+  filters:  [... new Set(session.map(x=>x.firstname_player))].map(function(num , key) {
+      
+    return { text: num , value: num };
+  }),
+   onFilter:(value, sess )=>{
+  
+    return sess.firstname_player === value
+   }
+
+},
+  { title: "Date", dataIndex: "date" ,
+  filters:  [... new Set(session.map(x=>x.date))].map(function(num ) {
+      
+    return { text: num, value: num.substr(0, 10) };
+  }),
+   onFilter:(value, loc )=>{
+
+    return loc.date.substr(0, 10) === value
+   },
+   defaultFilteredValue:[ moment().format("YYYY-MM-DD").toString() ]
+ },
+  { title: "Location", dataIndex: "location", key: `_id` ,
+  filters:  [... new Set(session.map(x=>x.location))].map(function(num ) {
+      
+    return { text: num, value: num };
+  }),
+   onFilter:(value, loc )=>{
+
+    return loc.location === value
+   }
+ },
   { title: "Objective", dataIndex: "objective" },
   { title: "Target", dataIndex: "target" },
   { title: "Program", dataIndex: "program" , key: `_id`},

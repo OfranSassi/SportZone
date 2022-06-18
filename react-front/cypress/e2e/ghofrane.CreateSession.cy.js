@@ -9,8 +9,8 @@ describe("Create and Delete Session :", () => {
   cy.get(".ant-btn > span").click()
   cy.wait(1000)
   cy.visit("/coach-session")
-  cy.wait(1000)
-  cy.get("#makeSession").click()
+  cy.wait(2000)
+  cy.get('#makeSession').click()
   cy.wait(1000)
   cy.get("#title").clear().type("New session with cypress")
   cy.wait(1000)
@@ -54,7 +54,7 @@ describe("Create and Delete Session :", () => {
  })
 
 
- it.only("Deleting a Session", function () {
+ it("Deleting a Session", function () {
   const email = "ofransassy@gmail.com"
   const password = "Ofran1"
 
@@ -65,7 +65,7 @@ describe("Create and Delete Session :", () => {
   cy.wait(1000)
   cy.visit("/coach-session")
   cy.wait(1000)
-  cy.get(':nth-child(4) > :nth-child(8) > .anticon > svg').click()
+  cy.get(':nth-child(1) > :nth-child(8) > .anticon > svg').click()
   cy.get('.ant-btn-dangerous').click()
  })
 })
